@@ -1,0 +1,99 @@
+/* science.css - Specific styles for the science.html page */
+
+#science-hero {
+    min-height: 70vh; 
+    display: flex; 
+    align-items: center; 
+    justify-content: center; 
+    position: relative; /* Ensure this is set for absolute positioning of canvas */
+    overflow: hidden; /* Prevent canvas overflow if any issues */
+}
+
+/* CHANGED ID HERE */
+#science-hero-2d-canvas { 
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%; 
+    z-index: 0; 
+    opacity: 0.75; /* Adjust opacity as needed */
+    /* background-color: #e0f2fe; */ /* Optional: a light background color for the canvas itself if needed */
+}
+
+.science-hero-content { 
+    position: relative; 
+    z-index: 1;
+    padding-top: 60px; 
+    padding-bottom: 40px;
+    width: 100%;
+    max-width: 800px;
+}
+
+
+/* New Search Bar Styles */
+.science-search-form {
+    background-color: #ffffff;
+    border-radius: 0.75rem; /* Slightly more rounded */
+    padding: 0.375rem; /* Smaller padding around input and button */
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08); /* Softer, more spread shadow */
+    border: 1px solid #e2e8f0; /* Lighter border */
+    transition: box-shadow 0.2s ease-in-out;
+}
+.science-search-form:focus-within { /* Highlight when input is focused */
+    box-shadow: 0 6px 20px rgba(59, 130, 246, 0.15);
+    border-color: #90cdf4; /* Light blue border on focus */
+}
+
+.science-search-input {
+    background-color: transparent;
+    color: #2d3748; /* Darker gray for text */
+    border: none;
+    padding: 0.875rem 1.25rem; /* More padding inside input */
+    font-size: 0.95rem; /* Slightly smaller font */
+    outline: none;
+    width: 100%; /* Ensure it takes available space */
+}
+.science-search-input::placeholder {
+    color: #a0aec0; /* Lighter gray for placeholder */
+    font-weight: 300;
+}
+
+.science-search-button {
+    background-color: #3b82f6; /* Blue-500 */
+    color: white;
+    padding: 0.75rem 1.25rem; /* Adjusted padding */
+    border-radius: 0.5rem; /* Match outer form rounding */
+    margin-left: 0.375rem; /* Space from input */
+    transition: background-color 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: none; /* Remove default button border */
+    cursor: pointer;
+}
+.science-search-button:hover {
+    background-color: #2563eb; /* Blue-600 */
+}
+.science-search-button i {
+    font-size: 1rem; /* Icon size */
+}
+
+
+/* Category tags styling */
+.tag-earth-science {
+    color: #ca8a04; 
+    background-color: #fef9c3; 
+}
+.tag-environmental-science {
+    color: #4d7c0f; 
+    background-color: #ecfccb; 
+}
+
+body {
+    padding-top: 68px; 
+}
+
+@media (min-width: 768px) { 
+    /* Add responsive styles here if needed */
+}

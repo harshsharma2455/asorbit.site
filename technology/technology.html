@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Technology Hub - Elabator</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@300;400;500;600;700&display=swap" rel="stylesheet"> <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="../style.css"> <link rel="stylesheet" href="technology.css"> </head>
+<body class="bg-gray-900 text-gray-300 font-['Inter',_sans-serif]"> <nav class="bg-gray-800/85 backdrop-blur-md shadow-lg fixed w-full z-50 top-0 border-b border-gray-700">
+        <div class="container mx-auto px-6 py-3.5 flex justify-between items-center">
+            <a href="../index.html" class="text-2xl font-bold gradient-text-green-cyan gradient-text-glow">
+                <i class="fas fa-code mr-2"></i>Elabator
+            </a>
+            <div class="hidden md:flex space-x-6 items-center">
+                <a href="../index.html#home" class="text-gray-400 hover:text-cyan-400 transition duration-200 text-sm font-medium">Home</a>
+                <a href="../index.html#resources" class="text-gray-400 hover:text-cyan-400 transition duration-200 text-sm font-medium">Resources</a>
+                <a href="../index.html#activities" class="text-gray-400 hover:text-cyan-400 transition duration-200 text-sm font-medium">Activities</a>
+                <a href="../index.html#community" class="text-gray-400 hover:text-cyan-400 transition duration-200 text-sm font-medium">Community</a>
+                <a href="../index.html#about" class="text-gray-400 hover:text-cyan-400 transition duration-200 text-sm font-medium">About</a>
+                <a href="../index.html#contact" class="btn-primary-tech text-sm py-2 px-4">
+                    Get Started
+                </a>
+            </div>
+            <div class="md:hidden">
+                <button id="mobile-menu-button-tech" class="text-gray-300 focus:outline-none">
+                    <i class="fas fa-bars text-2xl"></i>
+                </button>
+            </div>
+        </div>
+        <div id="mobile-menu-tech" class="md:hidden hidden bg-gray-800/95 backdrop-blur-sm shadow-lg border-t border-gray-700">
+            <a href="../index.html#home" class="block px-6 py-3 text-gray-300 hover:bg-gray-700 hover:text-cyan-400 transition duration-200">Home</a>
+            <a href="../index.html#resources" class="block px-6 py-3 text-gray-300 hover:bg-gray-700 hover:text-cyan-400 transition duration-200">Resources</a>
+            <a href="../index.html#activities" class="block px-6 py-3 text-gray-300 hover:bg-gray-700 hover:text-cyan-400 transition duration-200">Activities</a>
+            <a href="../index.html#community" class="block px-6 py-3 text-gray-300 hover:bg-gray-700 hover:text-cyan-400 transition duration-200">Community</a>
+            <a href="../index.html#about" class="block px-6 py-3 text-gray-300 hover:bg-gray-700 hover:text-cyan-400 transition duration-200">About</a>
+            <a href="../index.html#contact" class="block px-6 py-3 bg-cyan-600 text-white text-center font-semibold rounded-b-lg hover:bg-cyan-700 transition duration-200">Get Started</a>
+        </div>
+    </nav>
+
+    <header id="tech-hero" class="tech-hero-bg text-gray-200">
+        <canvas id="tech-hero-canvas"></canvas> <div class="container mx-auto px-6 text-center tech-hero-content">
+            <h1 class="text-3xl sm:text-4xl md:text-5xl font-bold mb-4 leading-tight text-gray-100">
+                Enter the <span class="gradient-text-green-cyan">Digital Realm</span>
+            </h1>
+            <p class="text-md md:text-lg mb-8 max-w-xl mx-auto text-gray-400 font-['Fira_Code',_monospace]">
+                Explore programming, web development, AI, cybersecurity, and the tools that build our future.
+            </p>
+            <div class="max-w-lg mx-auto mt-2 mb-6">
+                 <form class="tech-search-form flex items-center">
+                    <span class="text-cyan-400 pl-3 pr-2 font-['Fira_Code',_monospace]">$</span>
+                    <input type="text" placeholder="search topics('python', 'AI', 'webdev')..." class="tech-search-input flex-grow">
+                    <button type="submit" class="tech-search-button">
+                        <i class="fas fa-terminal mr-1"></i> Execute
+                    </button>
+                </form>
+            </div>
+        </div>
+    </header>
+
+    <main class="bg-gray-850"> <section id="tech-categories" class="py-16">
+            <div class="container mx-auto px-6">
+                <h2 class="text-2xl md:text-3xl font-bold text-center mb-12 text-cyan-400">Explore <span class="gradient-text-green-cyan">Tech Domains</span></h2>
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+                    <div class="yt-card-tech">
+                        <div class="yt-card-thumbnail-tech">
+                             <img src="https://placehold.co/400x225/0d1117/c9d1d9?text=Code" alt="Programming Languages" onerror="this.src='https://placehold.co/400x225/1f2937/9ca3af?text=Code+Symbol'">
+                        </div>
+                        <div class="yt-card-content-tech">
+                            <h3 class="yt-card-title-tech">Programming Languages</h3>
+                            <p class="yt-card-meta-tech">Python, JavaScript, Java, C++ & More</p>
+                            <p class="yt-card-description-tech">Learn the syntax, concepts, and best practices of popular programming languages.</p>
+                             <a href="#" class="text-cyan-500 hover:text-cyan-400 font-medium text-sm mt-3 inline-block">Start Coding <i class="fas fa-chevron-right ml-1 text-xs"></i></a>
+                        </div>
+                    </div>
+                    <div class="yt-card-tech">
+                        <div class="yt-card-thumbnail-tech">
+                            <img src="https://placehold.co/400x225/0d1117/58a6ff?text=WebDev" alt="Web Development" onerror="this.src='https://placehold.co/400x225/1f2937/9ca3af?text=Web+Icon'">
+                        </div>
+                        <div class="yt-card-content-tech">
+                            <h3 class="yt-card-title-tech">Web Development</h3>
+                            <p class="yt-card-meta-tech">HTML, CSS, JS, Frameworks</p>
+                            <p class="yt-card-description-tech">Build modern websites and web applications from front-end to back-end.</p>
+                            <a href="#" class="text-cyan-500 hover:text-cyan-400 font-medium text-sm mt-3 inline-block">Build the Web <i class="fas fa-chevron-right ml-1 text-xs"></i></a>
+                        </div>
+                    </div>
+                    <div class="yt-card-tech">
+                        <div class="yt-card-thumbnail-tech">
+                             <img src="https://placehold.co/400x225/0d1117/1f6feb?text=AI/ML" alt="AI & Machine Learning" onerror="this.src='https://placehold.co/400x225/1f2937/9ca3af?text=AI+Brain'">
+                        </div>
+                        <div class="yt-card-content-tech">
+                            <h3 class="yt-card-title-tech">AI & Machine Learning</h3>
+                            <p class="yt-card-meta-tech">Algorithms, Data Science, Neural Networks</p>
+                            <p class="yt-card-description-tech">Dive into the world of artificial intelligence and machine learning concepts.</p>
+                             <a href="#" class="text-cyan-500 hover:text-cyan-400 font-medium text-sm mt-3 inline-block">Explore AI <i class="fas fa-chevron-right ml-1 text-xs"></i></a>
+                        </div>
+                    </div>
+                    <div class="yt-card-tech">
+                        <div class="yt-card-thumbnail-tech">
+                             <img src="https://placehold.co/400x225/0d1117/f05053?text=CyberSec" alt="Cybersecurity" onerror="this.src='https://placehold.co/400x225/1f2937/9ca3af?text=Shield+Icon'">
+                        </div>
+                        <div class="yt-card-content-tech">
+                            <h3 class="yt-card-title-tech">Cybersecurity</h3>
+                            <p class="yt-card-meta-tech">Ethical Hacking, Network Security</p>
+                            <p class="yt-card-description-tech">Learn to protect systems and data from cyber threats and vulnerabilities.</p>
+                             <a href="#" class="text-cyan-500 hover:text-cyan-400 font-medium text-sm mt-3 inline-block">Secure Systems <i class="fas fa-chevron-right ml-1 text-xs"></i></a>
+                        </div>
+                    </div>
+                    <div class="yt-card-tech">
+                        <div class="yt-card-thumbnail-tech">
+                             <img src="https://placehold.co/400x225/0d1117/2da44e?text=DevOps" alt="DevOps" onerror="this.src='https://placehold.co/400x225/1f2937/9ca3af?text=DevOps+Cycle'">
+                        </div>
+                        <div class="yt-card-content-tech">
+                            <h3 class="yt-card-title-tech">DevOps & Cloud</h3>
+                            <p class="yt-card-meta-tech">CI/CD, Docker, Kubernetes, AWS, Azure</p>
+                            <p class="yt-card-description-tech">Explore practices and tools for efficient software development and deployment.</p>
+                             <a href="#" class="text-cyan-500 hover:text-cyan-400 font-medium text-sm mt-3 inline-block">Automate & Deploy <i class="fas fa-chevron-right ml-1 text-xs"></i></a>
+                        </div>
+                    </div>
+                    <div class="yt-card-tech">
+                        <div class="yt-card-thumbnail-tech">
+                             <img src="https://placehold.co/400x225/0d1117/a371f7?text=Tools" alt="Developer Tools" onerror="this.src='https://placehold.co/400x225/1f2937/9ca3af?text=Tools+Icon'">
+                        </div>
+                        <div class="yt-card-content-tech">
+                            <h3 class="yt-card-title-tech">Developer Tools</h3>
+                            <p class="yt-card-meta-tech">Git, VS Code, IDEs, Linters</p>
+                            <p class="yt-card-description-tech">Master the essential tools that power modern software development workflows.</p>
+                             <a href="#" class="text-cyan-500 hover:text-cyan-400 font-medium text-sm mt-3 inline-block">Explore Tools <i class="fas fa-chevron-right ml-1 text-xs"></i></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="featured-tech-activities" class="py-16 bg-gray-900"> <div class="container mx-auto px-6">
+                <h2 class="text-2xl md:text-3xl font-bold text-center mb-12 text-cyan-400">Featured <span class="gradient-text-green-cyan">Coding Challenges</span></h2>
+                <div class="grid md:grid-cols-3 gap-6">
+                    <div class="yt-card-tech">
+                        <div class="yt-card-thumbnail-tech">
+                            <img src="https://placehold.co/600x338/0d1117/3fb950?text=HelloWorld" alt="Hello World in Python" onerror="this.src='https://placehold.co/600x338/1f2937/9ca3af?text=Activity+Visual'">
+                        </div>
+                        <div class="yt-card-content-tech">
+                            <span class="yt-card-category-tag-tech tag-python">Python</span>
+                            <h3 class="yt-card-title-tech">"Hello, World!" in Python</h3>
+                            <p class="yt-card-meta-tech">Beginner • 15 mins</p>
+                            <p class="yt-card-description-tech">Write your first Python program and understand basic syntax and output.</p>
+                        </div>
+                    </div>
+                    <div class="yt-card-tech">
+                        <div class="yt-card-thumbnail-tech">
+                            <img src="https://placehold.co/600x338/0d1117/ffab70?text=SimpleWebApp" alt="Basic HTML/CSS Web Page" onerror="this.src='https://placehold.co/600x338/1f2937/9ca3af?text=Activity+Visual'">
+                        </div>
+                        <div class="yt-card-content-tech">
+                            <span class="yt-card-category-tag-tech tag-webdev">Web Development</span>
+                            <h3 class="yt-card-title-tech">Build a Simple Web Page</h3>
+                            <p class="yt-card-meta-tech">Beginner • 1-2 hours</p>
+                            <p class="yt-card-description-tech">Create a personal portfolio page using HTML and basic CSS styling.</p>
+                        </div>
+                    </div>
+                    <div class="yt-card-tech">
+                        <div class="yt-card-thumbnail-tech">
+                            <img src="https://placehold.co/600x338/0d1117/79c0ff?text=JS+Counter" alt="JavaScript Counter" onerror="this.src='https://placehold.co/600x338/1f2937/9ca3af?text=Activity+Visual'">
+                        </div>
+                        <div class="yt-card-content-tech">
+                             <span class="yt-card-category-tag-tech tag-javascript">JavaScript</span>
+                            <h3 class="yt-card-title-tech">Interactive JS Counter</h3>
+                            <p class="yt-card-meta-tech">Intermediate • 1 hour</p>
+                            <p class="yt-card-description-tech">Develop a simple counter with increment, decrement, and reset functionality using JavaScript DOM manipulation.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="text-center mt-12">
+                    <a href="../index.html#activities" class="btn-secondary-tech">
+                        More Tech Projects
+                    </a>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="bg-gray-950 text-gray-400 py-12 border-t border-gray-700"> <div class="container mx-auto px-6">
+            <div class="grid md:grid-cols-3 gap-8 mb-8">
+                <div>
+                    <h3 class="text-lg font-bold text-gray-200 mb-3"><i class="fas fa-code mr-2 text-cyan-400"></i>Elabator</h3>
+                    <p class="text-xs font-light text-gray-500">Empowering future innovators through accessible technology education.</p>
+                </div>
+                <div>
+                    <h4 class="text-md font-semibold text-gray-300 mb-3">Quick Links</h4>
+                    <ul class="space-y-2 text-xs">
+                        <li><a href="../index.html#home" class="hover:text-cyan-400 transition duration-200 font-light text-gray-500">Home</a></li>
+                        <li><a href="../index.html#resources" class="hover:text-cyan-400 transition duration-200 font-light text-gray-500">Resources</a></li>
+                        <li><a href="../index.html#activities" class="hover:text-cyan-400 transition duration-200 font-light text-gray-500">Activities</a></li>
+                         <li><a href="#" class="hover:text-cyan-400 transition duration-200 font-light text-gray-500">Privacy Policy</a></li>
+                        <li><a href="#" class="hover:text-cyan-400 transition duration-200 font-light text-gray-500">Terms of Service</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="text-md font-semibold text-gray-300 mb-3">Connect</h4>
+                    <div class="flex space-x-4">
+                        <a href="#" class="text-gray-500 hover:text-cyan-400 transition duration-200 text-lg"><i class="fab fa-github"></i></a>
+                        <a href="#" class="text-gray-500 hover:text-cyan-400 transition duration-200 text-lg"><i class="fab fa-twitter"></i></a>
+                        <a href="#" class="text-gray-500 hover:text-cyan-400 transition duration-200 text-lg"><i class="fab fa-linkedin-in"></i></a>
+                    </div>
+                    <p class="text-xs mt-4 font-light text-gray-500">Email: <a href="mailto:tech@elabator.com" class="hover:text-cyan-400">tech@elabator.com</a></p>
+                </div>
+            </div>
+            <div class="border-t border-gray-700 pt-8 text-center text-xs font-light text-gray-500">
+                <p>&copy; <span id="currentYearTech"></span> Elabator. All Rights Reserved. <span class="font-['Fira_Code',_monospace]">Built with <i class="fas fa-heart text-red-500"></i> &lt;/&gt;.</span></p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="../script.js"></script> <script src="technology.js"></script> </body>
+</html>

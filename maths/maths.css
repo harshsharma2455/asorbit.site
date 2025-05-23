@@ -1,0 +1,168 @@
+/* maths.css - Specific styles for the maths.html page */
+
+body {
+    padding-top: 68px; /* Adjust if nav height changes, should match main style.css */
+    font-family: 'Inter', sans-serif; /* Ensuring Inter is primary */
+}
+
+#maths-hero {
+    min-height: 70vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+    background: linear-gradient(135deg, #f0f9ff 0%, #e0e7ff 100%); /* Light blue/indigo gradient */
+}
+
+#maths-hero-canvas {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 0;
+    opacity: 0.6; /* Adjust opacity for visibility of graphs/functions */
+}
+
+.maths-hero-content {
+    position: relative;
+    z-index: 1;
+    padding-top: 60px;
+    padding-bottom: 40px;
+    width: 100%;
+    max-width: 800px;
+}
+
+.gradient-text-maths {
+    background: linear-gradient(to right, #4f46e5, #7c3aed, #a855f7); /* Indigo to Purple gradient */
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+.text-indigo-600 { color: #4f46e5; }
+.hover\:text-indigo-600:hover { color: #4f46e5; }
+.hover\:text-indigo-700:hover { color: #4338ca; }
+.bg-indigo-500 { background-color: #6366f1; }
+.hover\:bg-indigo-600:hover { background-color: #4f46e5; }
+.text-indigo-500 { color: #6366f1; } /* For icons */
+
+
+/* Maths Search Bar Styles */
+.maths-search-form {
+    background-color: #ffffff;
+    border-radius: 0.75rem;
+    padding: 0.375rem;
+    box-shadow: 0 4px 15px rgba(79, 70, 229, 0.1); /* Indigo shadow */
+    border: 1px solid #c7d2fe; /* Indigo-200 border */
+    transition: box-shadow 0.2s ease-in-out, border-color 0.2s ease-in-out;
+}
+.maths-search-form:focus-within {
+    box-shadow: 0 6px 20px rgba(79, 70, 229, 0.2);
+    border-color: #818cf8; /* Indigo-300 border on focus */
+}
+
+.maths-search-input {
+    background-color: transparent;
+    color: #374151; /* Slate-700 for text */
+    border: none;
+    padding: 0.875rem 1.25rem;
+    font-size: 0.95rem;
+    outline: none;
+    width: 100%;
+    font-family: 'Source Code Pro', monospace; /* Monospace for math search */
+}
+.maths-search-input::placeholder {
+    color: #6b7280; /* Slate-500 for placeholder */
+    font-weight: 300;
+}
+
+.maths-search-button {
+    background-color: #4f46e5; /* Indigo-600 */
+    color: white;
+    padding: 0.75rem 1.25rem;
+    border-radius: 0.5rem;
+    margin-left: 0.375rem;
+    transition: background-color 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: none;
+    cursor: pointer;
+}
+.maths-search-button:hover {
+    background-color: #4338ca; /* Indigo-700 */
+}
+.maths-search-button i {
+    font-size: 1rem;
+}
+
+/* Category tags styling for Maths */
+/* Using colors from the provided palette and some common math associations */
+.tag-algebra { color: #4338ca; background-color: #e0e7ff; }       /* Indigo */
+.tag-geometry { color: #047857; background-color: #d1fae5; }      /* Green (Emerald) */
+.tag-calculus { color: #9f1239; background-color: #fee2e2; }      /* Pink/Rose */
+.tag-statistics { color: #b45309; background-color: #fef9c3; }    /* Amber */
+.tag-number-theory { color: #3f6212; background-color: #ecfccb; } /* Lime */
+.tag-art { color: #581c87; background-color: #f3e8ff; } /* Purple for Art crossover */
+.tag-biology { color: #15803d; background-color: #dcfce7; } /* From main for crossover */
+
+
+/* General card styles from main style.css (or science.css) might be inherited. */
+/* Ensure yt-card, yt-card-thumbnail, yt-card-content, etc., are styled if not already globally available */
+/* Or add specific overrides for maths page if needed */
+.yt-card {
+    /* Ensure this is consistent with your main style.css or science.css */
+    /* Example from science.css: */
+    background-color: #ffffff;
+    border-radius: 0.5rem;
+    overflow: hidden;
+    border: 1px solid #e5e7eb; /* gray-200 */
+    transition: transform 0.2s ease-out, box-shadow 0.2s ease-out;
+}
+.yt-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 16px rgba(79, 70, 229, 0.1); /* Indigo shadow on hover */
+}
+.yt-card-thumbnail img {
+    width: 100%;
+    height: 180px;
+    object-fit: cover;
+    background-color: #e5e7eb; /* Placeholder BG */
+}
+.yt-card-content {
+    padding: 1rem;
+}
+.yt-card-title {
+    font-size: 1.125rem; /* text-lg */
+    font-weight: 600;    /* semibold */
+    color: #1f2937;      /* gray-800 */
+    margin-bottom: 0.25rem;
+    line-height: 1.4;
+}
+.yt-card-meta {
+    font-size: 0.875rem; /* text-sm */
+    color: #4b5563;      /* gray-600 */
+    margin-bottom: 0.5rem;
+}
+.yt-card-description {
+    font-size: 0.875rem; /* text-sm */
+    color: #374151;      /* gray-700 */
+    line-height: 1.5;
+    display: -webkit-box;
+    -webkit-line-clamp: 2; /* Show 2 lines */
+    line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    min-height: calc(1.5em * 2); /* Ensure space for 2 lines */
+}
+.yt-card-category-tag {
+    font-size: 0.75rem; /* text-xs */
+    font-weight: 500;   /* medium */
+    padding: 0.25rem 0.625rem; /* py-1 px-2.5 */
+    border-radius: 9999px; /* rounded-full */
+    margin-bottom: 0.5rem; /* mb-2 */
+    margin-right: 0.25rem; /* Optional: space between tags */
+    display: inline-block;
+}

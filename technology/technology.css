@@ -1,0 +1,198 @@
+/* technology.css - Specific styles for the technology.html page */
+
+body {
+    padding-top: 68px; /* Adjust if nav height changes */
+    background-color: #0d1117; /* GitHub dark default - base */
+    color: #c9d1d9; /* GitHub dark default text */
+    font-family: 'Inter', sans-serif;
+}
+
+/* Gradient for coding theme */
+.gradient-text-green-cyan {
+    background: linear-gradient(to right, #3fb950, #2ea043, #58a6ff); /* Green to lighter blue/cyan */
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.tech-hero-bg {
+    min-height: 70vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+    background-color: #010409; /* Very dark, almost black for hero */
+    /* Optional: subtle pattern or gradient */
+    /* background-image: linear-gradient(rgba(13, 17, 23, 0.95), rgba(13, 17, 23, 0.95)), url('your-coding-pattern.svg'); */
+}
+
+#tech-hero-canvas {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 0;
+    opacity: 0.3; /* Adjust for subtlety */
+}
+
+.tech-hero-content {
+    position: relative;
+    z-index: 1;
+    padding-top: 60px;
+    padding-bottom: 40px;
+    width: 100%;
+    max-width: 800px;
+}
+
+/* Tech Search Bar - Terminal Style */
+.tech-search-form {
+    background-color: #161b22; /* Darker input area */
+    border-radius: 0.375rem; /* md */
+    padding: 0.25rem;
+    box-shadow: 0 0 15px rgba(88, 166, 255, 0.1); /* Subtle blue glow */
+    border: 1px solid #30363d; /* Border for terminal */
+    transition: box-shadow 0.2s ease-in-out, border-color 0.2s ease-in-out;
+    font-family: 'Fira Code', monospace;
+}
+.tech-search-form:focus-within {
+    box-shadow: 0 0 25px rgba(88, 166, 255, 0.2);
+    border-color: #58a6ff; /* Lighter blue on focus */
+}
+
+.tech-search-input {
+    background-color: transparent;
+    color: #c9d1d9; /* Light gray text */
+    border: none;
+    padding: 0.625rem 0.75rem; /* py-2.5 px-3 */
+    font-size: 0.875rem; /* sm */
+    outline: none;
+    width: 100%;
+    font-family: 'Fira Code', monospace;
+}
+.tech-search-input::placeholder {
+    color: #484f58; /* Dimmed placeholder */
+    font-weight: 300;
+}
+
+.tech-search-button {
+    background-color: #238636; /* Green button */
+    color: white;
+    padding: 0.5rem 1rem; /* py-2 px-4 */
+    border-radius: 0.25rem; /* sm */
+    margin-left: 0.25rem;
+    transition: background-color 0.2s ease;
+    font-family: 'Fira Code', monospace;
+    font-size: 0.875rem;
+    border: none;
+    cursor: pointer;
+}
+.tech-search-button:hover {
+    background-color: #2ea043; /* Darker green */
+}
+.tech-search-button i {
+    font-size: 0.875rem;
+}
+
+/* Technology Card Styles */
+.bg-gray-850 { background-color: #10161d; } /* Slightly lighter than base for main section distinction */
+
+.yt-card-tech {
+    background-color: #161b22; /* Card background - GitHub issue box color */
+    border-radius: 0.375rem; /* md */
+    overflow: hidden;
+    border: 1px solid #30363d; /* Card border */
+    transition: transform 0.2s ease-out, box-shadow 0.2s ease-out, border-color 0.2s ease-out;
+    color: #c9d1d9;
+}
+.yt-card-tech:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 24px rgba(88, 166, 255, 0.15); /* Blueish glow on hover */
+    border-color: #58a6ff;
+}
+.yt-card-thumbnail-tech img {
+    width: 100%;
+    height: 180px;
+    object-fit: cover;
+    background-color: #0d1117; /* Dark bg for image placeholder */
+    border-bottom: 1px solid #30363d;
+}
+.yt-card-content-tech {
+    padding: 1.25rem; /* p-5 */
+}
+.yt-card-title-tech {
+    font-size: 1.125rem; /* xl */
+    font-weight: 600; /* semibold */
+    color: #e6edf3; /* Lighter title */
+    margin-bottom: 0.25rem;
+    line-height: 1.4;
+    font-family: 'Inter', sans-serif;
+}
+.yt-card-meta-tech {
+    font-size: 0.8rem; /* text-xs equivalent */
+    color: #8b949e; /* Meta text color */
+    margin-bottom: 0.5rem;
+    font-family: 'Fira Code', monospace;
+}
+.yt-card-description-tech {
+    font-size: 0.875rem; /* sm */
+    color: #adb5bd; /* Description text */
+    line-height: 1.6;
+    font-family: 'Inter', sans-serif;
+    min-height: calc(1.6em * 2); /* For 2 lines */
+}
+.yt-card-category-tag-tech {
+    font-size: 0.7rem;
+    font-weight: 500;
+    padding: 0.25rem 0.625rem;
+    border-radius: 9999px;
+    margin-bottom: 0.75rem;
+    display: inline-block;
+    font-family: 'Fira Code', monospace;
+    border: 1px solid;
+}
+
+/* Category Tag Colors (adjust as needed) */
+.tag-python { color: #3CC77B; background-color: rgba(60, 199, 123, 0.1); border-color: #3CC77B; }
+.tag-javascript { color: #F7DF1E; background-color: rgba(247, 223, 30, 0.1); border-color: #F7DF1E;}
+.tag-webdev { color: #563D7C; background-color: rgba(86, 61, 124, 0.1); border-color: #563D7C;}
+.tag-ai { color: #17A2B8; background-color: rgba(23, 162, 184, 0.1); border-color: #17A2B8; }
+.tag-cybersecurity { color: #DC3545; background-color: rgba(220, 53, 69, 0.1); border-color: #DC3545;}
+/* Add more tags as needed */
+
+
+/* Buttons */
+.btn-primary-tech {
+    background-color: #238636; /* Green */
+    color: white;
+    font-weight: 500;
+    padding: 0.625rem 1.5rem; /* py-2.5 px-6 */
+    border-radius: 0.375rem;
+    transition: background-color 0.2s ease, transform 0.1s ease;
+    font-family: 'Inter', sans-serif;
+}
+.btn-primary-tech:hover {
+    background-color: #2ea043;
+    transform: translateY(-1px);
+}
+.btn-secondary-tech {
+    background-color: #21262d; /* Darker gray button */
+    color: #c9d1d9;
+    font-weight: 500;
+    padding: 0.625rem 1.25rem;
+    border-radius: 0.375rem;
+    border: 1px solid #30363d;
+    transition: background-color 0.2s ease, border-color 0.2s ease;
+    font-family: 'Inter', sans-serif;
+}
+.btn-secondary-tech:hover {
+    background-color: #30363d;
+    border-color: #58a6ff;
+}
+
+/* Adjust padding for main content */
+main#tech-categories, main #featured-tech-activities {
+    padding-top: 4rem;
+    padding-bottom: 4rem;
+}
