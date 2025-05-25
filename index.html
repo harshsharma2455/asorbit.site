@@ -3,346 +3,67 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Elabator: Igniting Young Minds</title>
+    <title>asorbit.site - Under Construction</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* Custom styles if needed, though Tailwind is preferred */
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        /* Simple animation for the heading */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .fade-in-element {
+            animation: fadeIn 0.8s ease-out forwards;
+        }
+    </style>
 </head>
-<body class="bg-gray-50 text-slate-700">
+<body class="bg-black text-gray-100 flex flex-col items-center justify-center min-h-screen p-6 selection:bg-green-500 selection:text-black">
 
-    <nav class="bg-white/85 backdrop-blur-md shadow-sm fixed w-full z-50 top-0">
-        <div class="container mx-auto px-6 py-3.5 flex justify-between items-center">
-            <a href="index.html" class="text-2xl font-bold gradient-text gradient-text-glow">
-                <i class="fas fa-atom mr-2"></i>Elabator
-            </a>
-            <div class="hidden md:flex space-x-6 items-center">
-                <a href="index.html#home" class="text-slate-600 hover:text-blue-600 transition duration-200 text-sm font-medium">Home</a>
-                <a href="index.html#resources" class="text-slate-600 hover:text-blue-600 transition duration-200 text-sm font-medium">Resources</a>
-                <a href="index.html#activities" class="text-slate-600 hover:text-blue-600 transition duration-200 text-sm font-medium">Activities</a>
-                <a href="index.html#community" class="text-slate-600 hover:text-blue-600 transition duration-200 text-sm font-medium">Community</a>
-                <a href="index.html#about" class="text-slate-600 hover:text-blue-600 transition duration-200 text-sm font-medium">About</a>
-                <a href="index.html#contact" class="btn-primary text-sm py-2 px-4">
-                    Get Started
-                </a>
-            </div>
-            <div class="md:hidden">
-                <button id="mobile-menu-button" class="text-slate-600 focus:outline-none">
-                    <i class="fas fa-bars text-2xl"></i>
-                </button>
-            </div>
+    <div class="text-center bg-gray-900 p-8 sm:p-12 rounded-xl shadow-2xl max-w-md w-full fade-in-element">
+        <img src="https://placehold.co/150x150/000000/9AE6B4?text=AS&font=inter" 
+             alt="asorbit.site Logo Placeholder" 
+             class="mx-auto mb-8 w-24 h-24 sm:w-32 sm:h-32 rounded-full border-4 border-green-400 shadow-lg"
+             onerror="this.onerror=null; this.src='https://placehold.co/150x150/000000/FFFFFF?text=Logo+Error&font=inter';"
+        >
+
+        <h1 class="text-3xl sm:text-4xl font-bold text-green-400 mb-3">
+            asorbit.site
+        </h1>
+        <p class="text-xl sm:text-2xl font-semibold text-gray-300 mb-6">
+            Is Under Construction
+        </p>
+
+        <p class="text-lg text-gray-300 mb-2">
+            Hi Harsh Sharma,
+        </p>
+
+        <p class="text-md sm:text-lg text-gray-400 mb-8">
+            We're working hard behind the scenes to bring you something amazing. Please check back soon!
+        </p>
+
+        <div class="w-full bg-gray-700 rounded-full h-2.5 mb-8">
+            <div class="bg-green-500 h-2.5 rounded-full" style="width: 45%"></div>
         </div>
-        <div id="mobile-menu" class="md:hidden hidden bg-white/95 backdrop-blur-sm shadow-lg border-t border-gray-200">
-            <a href="index.html#home" class="block px-6 py-3 text-slate-600 hover:bg-gray-100 hover:text-blue-600 transition duration-200">Home</a>
-            <a href="index.html#resources" class="block px-6 py-3 text-slate-600 hover:bg-gray-100 hover:text-blue-600 transition duration-200">Resources</a>
-            <a href="index.html#activities" class="block px-6 py-3 text-slate-600 hover:bg-gray-100 hover:text-blue-600 transition duration-200">Activities</a>
-            <a href="index.html#community" class="block px-6 py-3 text-slate-600 hover:bg-gray-100 hover:text-blue-600 transition duration-200">Community</a>
-            <a href="index.html#about" class="block px-6 py-3 text-slate-600 hover:bg-gray-100 hover:text-blue-600 transition duration-200">About</a>
-            <a href="index.html#contact" class="block px-6 py-3 bg-blue-500 text-white text-center font-semibold rounded-b-lg hover:bg-blue-600 transition duration-200">Get Started</a>
-        </div>
-    </nav>
+        
+        <p class="text-sm text-gray-500">
+            Stay tuned for updates!
+        </p>
+    </div>
 
-    <header id="home" class="hero-bg-light text-slate-800">
-        <canvas id="hero-3d-canvas"></canvas>
-        <div class="container mx-auto px-6 text-center hero-content">
-            <h1 class="text-3xl sm:text-4xl md:text-5xl font-bold mb-6 leading-tight text-slate-800">
-                Your Hub for STEM Education Resources
-            </h1>
-            <p class="text-md md:text-lg mb-8 max-w-xl mx-auto text-slate-600 font-light">
-                Discover engaging activities, lesson plans, and tools to inspire the next generation of innovators.
-            </p>
-            <div class="search-bar-container max-w-xl mx-auto mb-10">
-                <input type="text" placeholder="Search resources, e.g., 'coding', 'volcano'..." class="search-input">
-                <button class="search-button">
-                    <i class="fas fa-search mr-1.5 text-sm"></i> Search
-                </button>
-            </div>
-            <a href="#resources" class="btn-primary">
-                Explore All Resources
-            </a>
-        </div>
-    </header>
-
-    <main>
-        <section id="why-stem" class="py-16 bg-white">
-            <div class="container mx-auto px-6">
-                <h2 class="text-2xl md:text-3xl font-bold text-center mb-4 text-blue-600">Why <span class="gradient-text">STEM</span> Matters</h2>
-                <p class="text-center text-slate-600 mb-12 max-w-3xl mx-auto text-md font-light">
-                    STEM education is crucial for developing critical thinking, problem-solving skills, and creativity, preparing students for future challenges.
-                </p>
-                <div class="grid md:grid-cols-3 gap-8 text-center">
-                    <div class="bg-gray-50 p-6 rounded-lg shadow-sm card-hover-effect border border-gray-200">
-                        <div class="text-4xl text-blue-500 mb-4"><i class="fas fa-lightbulb"></i></div>
-                        <h3 class="text-lg font-semibold mb-2 text-slate-700">Fosters Creativity</h3>
-                        <p class="text-slate-500 font-light text-sm">Encourages students to think outside the box and develop innovative solutions.</p>
-                    </div>
-                    <div class="bg-gray-50 p-6 rounded-lg shadow-sm card-hover-effect border border-gray-200">
-                        <div class="text-4xl text-pink-500 mb-4"><i class="fas fa-cogs"></i></div>
-                        <h3 class="text-lg font-semibold mb-2 text-slate-700">Builds Resilience</h3>
-                        <p class="text-slate-500 font-light text-sm">Teaches persistence and the value of learning from trial and error.</p>
-                    </div>
-                    <div class="bg-gray-50 p-6 rounded-lg shadow-sm card-hover-effect border border-gray-200">
-                        <div class="text-4xl text-green-500 mb-4"><i class="fas fa-users"></i></div>
-                        <h3 class="text-lg font-semibold mb-2 text-slate-700">Promotes Collaboration</h3>
-                        <p class="text-slate-500 font-light text-sm">Develops teamwork skills through project-based learning.</p>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <section id="resources" class="py-16 bg-gray-50">
-            <div class="container mx-auto px-6">
-                <h2 class="text-2xl md:text-3xl font-bold text-center mb-12 text-blue-600">Discover <span class="gradient-text">STEM</span> Resources</h2>
-                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-
-                    <a href="science/science.html" class="block card-link-wrapper">
-                        <div class="yt-card science-theme h-full flex flex-col">
-                            <div class="yt-card-thumbnail">
-                                 <img src="https://placehold.co/400x225/dbeafe/1e3a8a?text=Science" alt="Science Resources" onerror="this.src='https://placehold.co/400x225/e5e7eb/6b7280?text=Science+Visual+Error'; this.alt='Error loading science image';" >
-                            </div>
-                            <div class="yt-card-content flex-grow">
-                                <h3 class="yt-card-title">Science Explorations</h3>
-                                <p class="yt-card-meta">Experiments & Lessons</p>
-                                <p class="yt-card-description">Biology, chemistry, physics, and earth science with hands-on activities.</p>
-                                <span class="text-blue-600 group-hover:text-blue-700 font-medium text-sm mt-3 inline-block">
-                                    View Science <i class="fas fa-arrow-right ml-1 text-xs"></i>
-                                </span>
-                            </div>
-                        </div>
-                    </a>
-
-                    <a href="technology/technology.html" class="block card-link-wrapper">
-                        <div class="yt-card technology-theme h-full flex flex-col">
-                            <div class="yt-card-thumbnail">
-                                <img src="https://placehold.co/400x225/d1fae5/059669?text=Technology" alt="Technology Resources" onerror="this.src='https://placehold.co/400x225/e5e7eb/6b7280?text=Tech+Visual+Error'; this.alt='Error loading technology image';">
-                            </div>
-                            <div class="yt-card-content flex-grow">
-                                <h3 class="yt-card-title">Tech & Coding Hub</h3>
-                                <p class="yt-card-meta">Robotics, AI & Digital Skills</p>
-                                <p class="yt-card-description">Equip students with future-ready tech skills through interactive projects.</p>
-                                <span class="text-blue-600 group-hover:text-blue-700 font-medium text-sm mt-3 inline-block">
-                                    Explore Tech <i class="fas fa-arrow-right ml-1 text-xs"></i>
-                                </span>
-                            </div>
-                        </div>
-                    </a>
-
-                    <a href="engineering/engineering.html" class="block card-link-wrapper">
-                        <div class="yt-card engineering-theme h-full flex flex-col">
-                            <div class="yt-card-thumbnail">
-                                 <img src="https://placehold.co/400x225/f3e8ff/7e22ce?text=Engineering" alt="Engineering Resources" onerror="this.src='https://placehold.co/400x225/e5e7eb/6b7280?text=Engineering+Visual+Error'; this.alt='Error loading engineering image';">
-                            </div>
-                            <div class="yt-card-content flex-grow">
-                                <h3 class="yt-card-title">Engineering Challenges</h3>
-                                <p class="yt-card-meta">Design & Problem-Solving</p>
-                                <p class="yt-card-description">Introduce design thinking and structural challenges with engaging projects.</p>
-                                 <span class="text-blue-600 group-hover:text-blue-700 font-medium text-sm mt-3 inline-block">
-                                    Design Now <i class="fas fa-arrow-right ml-1 text-xs"></i>
-                                 </span>
-                            </div>
-                        </div>
-                    </a>
-
-                    <a href="maths/maths.html" class="block card-link-wrapper">
-                        <div class="yt-card maths-theme h-full flex flex-col">
-                            <div class="yt-card-thumbnail">
-                                <img src="https://placehold.co/400x225/fee2e2/be123c?text=Mathematics" alt="Mathematics Resources" onerror="this.src='https://placehold.co/400x225/e5e7eb/6b7280?text=Math+Visual+Error'; this.alt='Error loading mathematics image';">
-                            </div>
-                            <div class="yt-card-content flex-grow">
-                                <h3 class="yt-card-title">Math Adventures</h3>
-                                <p class="yt-card-meta">Games, Puzzles & Concepts</p>
-                                <p class="yt-card-description">Make math fun with interactive games and real-world applications.</p>
-                                 <span class="text-blue-600 group-hover:text-blue-700 font-medium text-sm mt-3 inline-block">
-                                    Solve Puzzles <i class="fas fa-arrow-right ml-1 text-xs"></i>
-                                 </span>
-                            </div>
-                        </div>
-                    </a>
-                </div>
-            </div>
-        </section>
-
-        <section id="activities" class="py-16 bg-white"> <div class="container mx-auto px-6">
-                <h2 class="text-2xl md:text-3xl font-bold text-center mb-12 text-blue-600">Featured <span class="gradient-text">Activities</span> & Lesson Plans</h2>
-                <div class="grid md:grid-cols-3 gap-6">
-                    <div class="yt-card">
-                        <div class="yt-card-thumbnail">
-                            <img src="https://placehold.co/600x338/e0e7ff/3730a3?text=Activity+1" alt="DIY Volcano Experiment" onerror="this.src='https://placehold.co/600x338/e5e7eb/6b7280?text=Image+Not+Found'">
-                        </div>
-                        <div class="yt-card-content">
-                            <span class="yt-card-category-tag tag-science">Science</span>
-                            <h3 class="yt-card-title">DIY Volcano Experiment</h3>
-                            <p class="yt-card-meta">Grade 3-5 • 1 hour</p>
-                            <p class="yt-card-description">A classic, fun, and safe way to teach basic chemistry and geology concepts.</p>
-                        </div>
-                    </div>
-                    <div class="yt-card">
-                        <div class="yt-card-thumbnail">
-                            <img src="https://placehold.co/600x338/dcfce7/15803d?text=Activity+2" alt="Beginner Coding Game" onerror="this.src='https://placehold.co/600x338/e5e7eb/6b7280?text=Image+Not+Found'">
-                        </div>
-                        <div class="yt-card-content">
-                            <span class="yt-card-category-tag tag-technology">Technology</span>
-                            <h3 class="yt-card-title">Beginner Coding Game</h3>
-                            <p class="yt-card-meta">Grade 4-6 • 2-3 hours</p>
-                            <p class="yt-card-description">Introduce fundamental coding logic with a simple block-based game creator.</p>
-                        </div>
-                    </div>
-                    <div class="yt-card">
-                        <div class="yt-card-thumbnail">
-                            <img src="https://placehold.co/600x338/fdf4ff/c026d3?text=Activity+3" alt="Bridge Building Challenge" onerror="this.src='https://placehold.co/600x338/e5e7eb/6b7280?text=Image+Not+Found'">
-                        </div>
-                        <div class="yt-card-content">
-                             <span class="yt-card-category-tag tag-engineering">Engineering</span>
-                            <h3 class="yt-card-title">Bridge Building Challenge</h3>
-                            <p class="yt-card-meta">Grade 5-8 • Multi-day</p>
-                            <p class="yt-card-description">Test engineering principles by designing and building strong, efficient bridges from everyday materials.</p>
-                        </div>
-                    </div>
-                </div>
-                <div class="text-center mt-12">
-                    <a href="#" class="btn-secondary">
-                        Explore All Activities
-                    </a>
-                </div>
-            </div>
-        </section>
-
-        <section id="inspiration" class="py-16 bg-gray-50">
-            <div class="container mx-auto px-6">
-                <h2 class="text-2xl md:text-3xl font-bold text-center mb-12 text-blue-600">Quick <span class="gradient-text">Inspiration</span> Hub</h2>
-                <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
-                    <div class="bg-white p-6 rounded-lg shadow-sm hover:shadow-md transition-shadow duration-200 border border-gray-200">
-                        <div class="flex items-center mb-3">
-                            <i class="fas fa-lightbulb text-yellow-400 text-2xl mr-3"></i>
-                            <h4 class="font-semibold text-md text-slate-700">Spark Curiosity</h4>
-                        </div>
-                        <p class="text-sm text-slate-500 font-light">Use "What if..." questions to ignite students' imagination and critical thinking.</p>
-                    </div>
-                     <div class="bg-white p-6 rounded-lg shadow-sm hover:shadow-md transition-shadow duration-200 border border-gray-200">
-                        <div class="flex items-center mb-3">
-                            <i class="fas fa-tools text-gray-400 text-2xl mr-3"></i>
-                            <h4 class="font-semibold text-md text-slate-700">Hands-On Learning</h4>
-                        </div>
-                        <p class="text-sm text-slate-500 font-light">Prioritize activities where students can build, experiment, and learn by doing.</p>
-                    </div>
-                    <div class="bg-white p-6 rounded-lg shadow-sm hover:shadow-md transition-shadow duration-200 border border-gray-200">
-                        <div class="flex items-center mb-3">
-                            <i class="fas fa-link text-blue-500 text-2xl mr-3"></i>
-                            <h4 class="font-semibold text-md text-slate-700">Real-World Links</h4>
-                        </div>
-                        <p class="text-sm text-slate-500 font-light">Connect STEM concepts to everyday life and future careers to show relevance.</p>
-                    </div>
-                    <div class="bg-white p-6 rounded-lg shadow-sm hover:shadow-md transition-shadow duration-200 border border-gray-200">
-                        <div class="flex items-center mb-3">
-                            <i class="fas fa-comments text-green-500 text-2xl mr-3"></i>
-                            <h4 class="font-semibold text-md text-slate-700">Encourage Questions</h4>
-                        </div>
-                        <p class="text-sm text-slate-500 font-light">Create a safe space for students to ask questions, explore, and even fail forward.</p>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <section id="community" class="py-16 bg-white">
-            <div class="container mx-auto px-6 text-center">
-                <h2 class="text-2xl md:text-3xl font-bold mb-5 text-blue-600">Join Our <span class="gradient-text">Educator Community</span></h2>
-                <p class="text-md text-slate-600 mb-10 max-w-xl mx-auto font-light">
-                    Connect with fellow STEM educators, share innovative ideas, ask questions, and collaborate on exciting projects.
-                </p>
-                <div class="grid md:grid-cols-3 gap-8 mb-12">
-                    <div class="bg-gray-50 p-6 rounded-lg shadow-sm card-hover-effect border border-gray-200">
-                        <i class="fas fa-comments text-4xl text-blue-500 mb-4"></i>
-                        <h3 class="text-lg font-semibold mb-2 text-slate-700">Forums & Discussions</h3>
-                        <p class="text-slate-500 font-light text-sm">Engage in lively discussions on various STEM topics and teaching strategies.</p>
-                    </div>
-                    <div class="bg-gray-50 p-6 rounded-lg shadow-sm card-hover-effect border border-gray-200">
-                        <i class="fas fa-share-alt text-4xl text-pink-500 mb-4"></i>
-                        <h3 class="text-lg font-semibold mb-2 text-slate-700">Resource Sharing</h3>
-                        <p class="text-slate-500 font-light text-sm">Upload and download lesson plans, activities, and helpful materials.</p>
-                    </div>
-                    <div class="bg-gray-50 p-6 rounded-lg shadow-sm card-hover-effect border border-gray-200">
-                        <i class="fas fa-chalkboard-teacher text-4xl text-green-500 mb-4"></i>
-                        <h3 class="text-lg font-semibold mb-2 text-slate-700">Expert Q&A</h3>
-                        <p class="text-slate-500 font-light text-sm">Get answers to your burning questions from experienced STEM professionals.</p>
-                    </div>
-                </div>
-                <a href="#" class="btn-primary">
-                    Become a Member Today!
-                </a>
-            </div>
-        </section>
-
-        <section id="about" class="py-16 bg-gray-50">
-            <div class="container mx-auto px-6 flex flex-col md:flex-row items-center gap-10">
-                <div class="md:w-1/2">
-                    <img src="https://placehold.co/600x400/e0e7ff/3730a3?text=About+Elabator" alt="Team working on STEM projects" class="rounded-lg shadow-lg w-full" onerror="this.src='https://placehold.co/600x400/e5e7eb/6b7280?text=Image+Not+Found'">
-                </div>
-                <div class="md:w-1/2">
-                    <h2 class="text-2xl md:text-3xl font-bold mb-5 text-blue-600">About <span class="gradient-text">Elabator</span></h2>
-                    <p class="text-slate-600 mb-4 leading-relaxed font-light text-md">
-                        At Elabator, we believe every teacher can ignite a lifelong passion for STEM. Our mission is to provide high-quality, accessible, and engaging resources that make teaching STEM effective and enjoyable.
-                    </p>
-                    <p class="text-slate-600 mb-6 leading-relaxed font-light text-md">
-                        We are passionate educators and tech enthusiasts dedicated to supporting you. We curate and create resources aligned with educational standards, designed to spark curiosity and foster critical thinking.
-                    </p>
-                    <a href="#" class="text-blue-600 hover:text-blue-700 font-medium text-sm">
-                        Learn More About Our Story <i class="fas fa-long-arrow-alt-right ml-1 text-xs"></i>
-                    </a>
-                </div>
-            </div>
-        </section>
-
-        <section id="contact" class="contact-bg-light text-slate-800 py-20">
-            <div class="container mx-auto px-6 text-center">
-                <h2 class="text-2xl md:text-3xl font-bold mb-5 text-slate-800 gradient-text-glow">Ready to Spark Some Genius?</h2>
-                <p class="text-md md:text-lg mb-10 max-w-xl mx-auto text-slate-600 font-light">
-                    Join thousands of educators transforming their classrooms. Sign up for our newsletter for the latest tips and activities!
-                </p>
-                <form class="max-w-lg mx-auto flex flex-col sm:flex-row gap-3 items-center">
-                    <input type="email" placeholder="Enter your email address" class="search-input rounded-md w-full sm:w-auto border border-gray-300 focus:border-blue-500 focus:ring-1 focus:ring-blue-500" required>
-                    <button type="submit" class="btn-primary w-full sm:w-auto whitespace-nowrap search-button">
-                        Subscribe Now
-                    </button>
-                </form>
-            </div>
-        </section>
-    </main>
-
-    <footer class="bg-white text-slate-600 py-12 border-t border-gray-200">
-        <div class="container mx-auto px-6">
-            <div class="grid md:grid-cols-3 gap-8 mb-8">
-                <div>
-                    <h3 class="text-lg font-bold text-slate-700 mb-3"><i class="fas fa-atom mr-2 text-blue-600"></i>Elabator</h3>
-                    <p class="text-xs font-light text-slate-500">Empowering educators to inspire the next generation of innovators and problem solvers.</p>
-                </div>
-                <div>
-                    <h4 class="text-md font-semibold text-slate-700 mb-3">Quick Links</h4>
-                    <ul class="space-y-2 text-xs">
-                        <li><a href="index.html#home" class="hover:text-blue-600 transition duration-200 font-light text-slate-500">Home</a></li>
-                        <li><a href="index.html#resources" class="hover:text-blue-600 transition duration-200 font-light text-slate-500">Resources</a></li>
-                        <li><a href="index.html#activities" class="hover:text-blue-600 transition duration-200 font-light text-slate-500">Activities</a></li>
-                        <li><a href="index.html#community" class="hover:text-blue-600 transition duration-200 font-light text-slate-500">Community</a></li>
-                        <li><a href="#" class="hover:text-blue-600 transition duration-200 font-light text-slate-500">Privacy Policy</a></li>
-                        <li><a href="#" class="hover:text-blue-600 transition duration-200 font-light text-slate-500">Terms of Service</a></li>
-                    </ul>
-                </div>
-                <div>
-                    <h4 class="text-md font-semibold text-slate-700 mb-3">Connect With Us</h4>
-                    <div class="flex space-x-4">
-                        <a href="#" class="text-slate-500 hover:text-pink-500 transition duration-200 text-lg"><i class="fab fa-facebook-f"></i></a>
-                        <a href="#" class="text-slate-500 hover:text-pink-500 transition duration-200 text-lg"><i class="fab fa-twitter"></i></a>
-                        <a href="#" class="text-slate-500 hover:text-pink-500 transition duration-200 text-lg"><i class="fab fa-instagram"></i></a>
-                        <a href="#" class="text-slate-500 hover:text-pink-500 transition duration-200 text-lg"><i class="fab fa-linkedin-in"></i></a>
-                    </div>
-                    <p class="text-xs mt-4 font-light text-slate-500">Email: <a href="mailto:info@elabator.com" class="hover:text-blue-600">info@elabator.com</a></p>
-                </div>
-            </div>
-            <div class="border-t border-gray-200 pt-8 text-center text-xs font-light text-slate-500">
-                <p>&copy; <span id="currentYear"></span> Elabator. All Rights Reserved. Designed with <i class="fas fa-heart text-pink-500 text-xs"></i> for Educators.</p>
-            </div>
-        </div>
+    <footer class="mt-12 text-center fade-in-element" style="animation-delay: 0.3s;">
+        <p class="text-xs text-gray-600">
+            &copy; <span id="currentYear"></span> asorbit.site - All Rights Reserved.
+        </p>
     </footer>
-    <script src="script.js"></script>
+
+    <script>
+        // Set current year in footer
+        document.getElementById('currentYear').textContent = new Date().getFullYear();
+    </script>
+
 </body>
 </html>
