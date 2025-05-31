@@ -1,34 +1,55 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Asorbit</title>
-    <!-- <base href="/YOUR_REPOSITORY_NAME_HERE/"> -->
-    <style>
-      @tailwind base;
-      @tailwind components;
-      @tailwind utilities;
-      html {
-        scroll-behavior: smooth;
-      }
-      body {
-        font-family: 'Inter', sans-serif; /* Example if Inter was imported */
-      }
-    </style>
-  <script type="importmap">
-{
-  "imports": {
-    "react-dom/": "https://esm.sh/react-dom@^19.1.0/",
-    "react/": "https://esm.sh/react@^19.1.0/",
-    "react": "https://esm.sh/react@^19.1.0"
-  }
-}
-</script>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ASORBIT - Foundation for the Future</title>
+    <link rel="stylesheet" href="style.css">
 </head>
-  <body>
-    <noscript>You need to enable JavaScript to run this app.</noscript>
-    <div id="root"></div>
-    <script type="module" src="index.tsx"></script>
-  </body>
+<body>
+    <header>
+        <div class="logo">
+            <img src="images/logo.png" alt="ASORBIT Logo">
+        </div>
+        <nav class="navbar">
+        <ul class="nav-links">
+        <li><a href="#" class="nav-style-two active">HOME</a></li>
+        <li><a href="#" class="nav-style-two">TOOLS</a></li>
+        <li><a href="#" class="nav-style-two">ABOUT</a></li>
+        </ul>
+        </nav>
+    </header>
+
+    <main>
+        <section class="hero">
+            <div class="video-background-container">
+                <video autoplay muted loop playsinline id="heroVideo">
+                    <source src="images/background_video.mp4" type="video/mp4">
+                    Your browser does not support HTML5 video.
+                </video>
+                <div class="video-overlay"></div>
+            </div>
+
+            <div class="hero-text-container">
+                <h1>ASORBIT</h1>
+                <p>The REAL foundation for the FUTURE</p>
+                <a href="#" class="cta-button">Explore Now →</a>
+            </div>
+
+            <div class="custom-shape-divider-bottom">
+                <svg id="visual" viewBox="0 451 900 150" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" preserveAspectRatio="none">
+                    <path d="M0 451L129 465L257 488L386 490L514 463L643 452L771 471L900 465L900 601L771 601L643 601L514 601L386 601L257 601L129 601L0 601Z" fill="#eef50a"></path>
+                    <path d="M0 482L129 476L257 490L386 510L514 486L643 509L771 483L900 476L900 601L771 601L643 601L514 601L386 601L257 601L129 601L0 601Z" fill="#f7f766"></path>
+                    <path d="M0 530L129 522L257 517L386 527L514 533L643 510L771 525L900 528L900 601L771 601L643 601L514 601L386 601L257 601L129 601L0 601Z" fill="#fdfa9c"></path>
+                    <path d="M0 560L129 547L257 544L386 532L514 539L643 550L771 552L900 558L900 601L771 601L643 601L514 601L386 601L257 601L129 601L0 601Z" fill="#fffcce"></path>
+                    <path d="M0 560L129 572L257 562L386 566L514 575L643 562L771 555L900 565L900 601L771 601L643 601L514 601L386 601L257 601L129 601L0 601Z" fill="#ffffff"></path>
+                </svg>
+            </div>
+        </section>
+        <section class="content-after-hero">
+            <!-- <h2>More Content Here</h2>
+            <p>This section will be styled with a white background.</p> -->
+        </section>
+    </main>
+</body>
 </html>
