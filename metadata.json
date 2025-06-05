@@ -1,5 +1,0 @@
-
-{
-  "name": "Math Diagram Generator",
-  "description": "An application that takes a math question, generates a textual description of a helpful diagram, and then renders the diagram using flatten-js and Gemini API."
-}
