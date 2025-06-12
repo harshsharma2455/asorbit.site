@@ -54,11 +54,6 @@ const NewMainApp: React.FC = () => {
     if (geminiServiceInstanceRef.current) {
       return geminiServiceInstanceRef.current;
     }
-    if (!process.env.API_KEY) {
-      setGlobalError(API_KEY_ERROR_MESSAGE);
-      console.error(API_KEY_ERROR_MESSAGE);
-      throw new Error(API_KEY_ERROR_MESSAGE);
-    }
     try {
       const instance = new GeminiService();
       geminiServiceInstanceRef.current = instance;
