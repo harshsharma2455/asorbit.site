@@ -1,5 +1,3 @@
-
-
 import JXG from 'jsxgraph'; // Added import
 
 // Allow JSXGraph to be used from window if not using direct imports with types
@@ -13,6 +11,14 @@ export interface AppError {
   message: string;
   details?: string;
 }
+
+// Notification function type
+export type NotificationFunction = (notification: {
+  type: 'success' | 'error' | 'warning' | 'info';
+  title: string;
+  message: string;
+  duration?: number;
+}) => void;
 
 // SVG Elements (can be kept for potential non-geometric conceptual diagrams or fallback)
 export interface DiagramElementBase {

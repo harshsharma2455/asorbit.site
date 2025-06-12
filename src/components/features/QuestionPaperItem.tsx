@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import type { QuestionItem, AppError } from '../../types';
+import type { QuestionItem, AppError, NotificationFunction } from '../../types';
 import { DiagramDisplay } from './DiagramDisplay';
 import LoadingSpinner from '../core/LoadingSpinner';
 import Card from '../ui/Card';
@@ -33,6 +33,7 @@ interface QuestionPaperItemProps {
   onUpdateText?: (newText: string) => void; 
   onDeleteDiagram: (questionId: string) => void; 
   onRegenerateDiagram: (questionId: string) => void; 
+  addNotification: NotificationFunction;
 }
 
 export const QuestionPaperItem: React.FC<QuestionPaperItemProps> = ({
@@ -43,6 +44,7 @@ export const QuestionPaperItem: React.FC<QuestionPaperItemProps> = ({
   onUpdateText, 
   onDeleteDiagram,
   onRegenerateDiagram,
+  addNotification,
 }) => {
   const { id, text, category, marks, diagramData, isLoadingDiagram, diagramError, diagramOriginalQuestionPrompt, isDiagramRecommended } = questionItem;
 
@@ -251,7 +253,11 @@ export const QuestionPaperItem: React.FC<QuestionPaperItemProps> = ({
 
               {!isLoadingDiagram && diagramData && (
                 <div className="animate-fade-in">
-                  <DiagramDisplay data={diagramData} originalQuestion={diagramOriginalQuestionPrompt || editText} />
+                  <DiagramDisplay 
+                    data={diagramData} 
+                    originalQuestion={diagramOriginalQuestionPrompt || editText} 
+                    addNotification={addNotification}
+                  />
                 </div>
               )}
 
