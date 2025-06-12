@@ -1,3 +1,5 @@
+
+
 import JXG from 'jsxgraph'; // Added import
 
 // Allow JSXGraph to be used from window if not using direct imports with types
@@ -10,75 +12,6 @@ declare global {
 export interface AppError {
   message: string;
   details?: string;
-}
-
-// Notification function type
-export type NotificationFunction = (notification: {
-  type: 'success' | 'error' | 'warning' | 'info';
-  title: string;
-  message: string;
-  duration?: number;
-}) => void;
-
-// Doubt solving types
-export interface DoubtQuery {
-  id: string;
-  question: string;
-  subject: string;
-  timestamp: Date;
-  status: 'pending' | 'resolved' | 'failed';
-  attachedImage?: string; // base64 image data
-  solution?: DoubtSolution;
-}
-
-export interface DoubtSolution {
-  explanation: string;
-  steps?: string[];
-  relatedConcepts?: string[];
-  diagramData?: DiagramData;
-  confidence?: number; // 0-1 confidence score
-  additionalResources?: {
-    title: string;
-    url: string;
-    type: 'video' | 'article' | 'practice';
-  }[];
-}
-
-// User and subscription types
-export interface UserProfile {
-  id: string;
-  email: string;
-  name: string;
-  subscription: 'free' | 'premium' | 'pro';
-  subscriptionExpiry?: Date;
-  usageStats: {
-    questionsGenerated: number;
-    diagramsCreated: number;
-    doubtsResolved: number;
-    papersCreated: number;
-    lastReset: Date;
-  };
-  preferences: {
-    defaultSubject?: string;
-    defaultGrade?: string;
-    notificationsEnabled: boolean;
-    theme: 'light' | 'dark' | 'auto';
-  };
-}
-
-export interface SubscriptionPlan {
-  id: 'free' | 'premium' | 'pro';
-  name: string;
-  price: number;
-  currency: string;
-  interval: 'month' | 'year';
-  features: string[];
-  limits: {
-    questionsPerDay: number;
-    diagramsPerDay: number;
-    doubtsPerDay: number;
-    papersPerDay: number;
-  };
 }
 
 // SVG Elements (can be kept for potential non-geometric conceptual diagrams or fallback)

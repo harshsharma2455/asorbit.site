@@ -1,5 +1,6 @@
+
 import React, { useEffect, useRef, useId, useState } from 'react';
-import type { DiagramData, DiagramElement, RepresentationType, GeometricElement, PointDef, AngleDef, EllipseDef, SemicircleDef, LineDef, SegmentDef, TextDef, CircleDef, ArcDef, PolygonDef, FunctionGraphDef, NotificationFunction } from '../../types';
+import type { DiagramData, DiagramElement, RepresentationType, GeometricElement, PointDef, AngleDef, EllipseDef, SemicircleDef, LineDef, SegmentDef, TextDef, CircleDef, ArcDef, PolygonDef, FunctionGraphDef } from '../../types';
 import { DocumentTextIcon, ShapesIcon } from '../../config'; 
 import JXG from 'jsxgraph'; 
 
@@ -94,13 +95,8 @@ const renderElementSVG = (element: DiagramElement, index: number): React.ReactNo
   }
 };
 
-interface DiagramDisplayProps {
-  data: DiagramData;
-  originalQuestion: string;
-  addNotification: NotificationFunction;
-}
 
-export const DiagramDisplay: React.FC<DiagramDisplayProps> = ({ data, originalQuestion, addNotification }) => {
+export const DiagramDisplay: React.FC<DiagramDisplayProps> = ({ data, originalQuestion }) => {
   const defaultViewBoxSVG = "0 0 300 200";
   const jsxGraphBoardRef = useRef<JXG.Board | null>(null);
   const jsxGraphContainerId = useId() + '-jsxgraph-board'; 
@@ -239,7 +235,6 @@ export const DiagramDisplay: React.FC<DiagramDisplayProps> = ({ data, originalQu
                },
               highlightStrokeColor: elDef.highlightStrokeColor || '#60a5fa', 
               highlightFillColor: elDef.highlightFillColor || '#34d399',   
-              highlightStrokeOpacity: elDef.highlightStrokeOpacity ?? 0.9, 
               highlightFillOpacity: elDef.highlightFillOpacity ?? 0.5,
               ...elDef, 
             };
@@ -492,14 +487,7 @@ export const DiagramDisplay: React.FC<DiagramDisplayProps> = ({ data, originalQu
 
   const handleDownloadSVG = () => {
     if (!jsxGraphBoardRef.current || !isBoardReady || data.representationType !== 'geometry') {
-      const errorMessage = "SVG Download Error: Board not ready or not a geometric diagram.";
-      setJsxError(errorMessage);
-      addNotification({
-        type: 'error',
-        title: 'Download Failed',
-        message: errorMessage,
-        duration: 4000
-      });
+      setJsxError("SVG Download Error: Board not ready or not a geometric diagram.");
       return;
     }
 
@@ -522,9 +510,6 @@ export const DiagramDisplay: React.FC<DiagramDisplayProps> = ({ data, originalQu
         throw new Error(`Method ${exportMethodUsed} returned empty or invalid SVG string.`);
       }
 
-      // Log the SVG content for debugging
-      console.log("Generated SVG content:", svgString);
-
       const blob = new Blob([svgString], { type: 'image/svg+xml;charset=utf-8' });
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
@@ -534,27 +519,14 @@ export const DiagramDisplay: React.FC<DiagramDisplayProps> = ({ data, originalQu
       a.click();
       document.body.removeChild(a);
       URL.revokeObjectURL(url);
-      
       setJsxError(null); // Clear previous errors on success
-      addNotification({
-        type: 'success',
-        title: 'Download Successful',
-        message: 'Diagram has been downloaded as SVG file.',
-        duration: 3000
-      });
     } catch (error) {
       console.error("Error downloading SVG:", error);
       const message = error instanceof Error ? error.message : "An unknown error occurred during SVG export.";
-      const errorMessage = `Failed to download SVG: ${message}`;
-      setJsxError(errorMessage);
-      addNotification({
-        type: 'error',
-        title: 'Download Failed',
-        message: errorMessage,
-        duration: 5000
-      });
+      setJsxError(`Failed to download SVG: ${message}`);
     }
   };
+
 
   return (
     <div className="p-6 bg-white shadow-xl rounded-lg border border-slate-200 space-y-6">
@@ -580,6 +552,7 @@ export const DiagramDisplay: React.FC<DiagramDisplayProps> = ({ data, originalQu
             </button>
         )}
       </div>
+
 
       {data.errorParsing ? (
         <div className="p-4 bg-yellow-50 border border-yellow-300 rounded-md">
@@ -644,3 +617,8 @@ export const DiagramDisplay: React.FC<DiagramDisplayProps> = ({ data, originalQu
     </div>
   );
 };
+
+interface DiagramDisplayProps {
+  data: DiagramData;
+  originalQuestion: string;
+}

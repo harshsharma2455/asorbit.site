@@ -11,9 +11,8 @@
   "dependencies": {
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
-    "@google/generative-ai": "^0.21.0",
-    "jsxgraph": "1.9.0",
-    "cashfree-pg-sdk-javascript": "^2.0.8"
+    "@google/genai": "^1.4.0",
+    "jsxgraph": "1.9.0"
   },
   "devDependencies": {
     "@types/node": "^22.14.0",

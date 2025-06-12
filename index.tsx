@@ -1,6 +1,7 @@
+
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import NewMainApp from './src/NewMainApp'; // Updated to use the new app
+import MainApp from './src/MainApp'; // Updated to MainApp
 
 const rootElement = document.getElementById('root');
 if (!rootElement) {
@@ -10,6 +11,6 @@ if (!rootElement) {
 const root = ReactDOM.createRoot(rootElement);
 root.render(
   <React.StrictMode>
-    <NewMainApp />
+    <MainApp />
   </React.StrictMode>
 );

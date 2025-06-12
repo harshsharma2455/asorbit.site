@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import type { PaperConfiguration, QuestionItem, QuestionCategory, NotificationFunction } from '../../types';
+import type { PaperConfiguration, QuestionItem, QuestionCategory } from '../../types';
 import { QuestionPaperItem } from '../features/QuestionPaperItem'; 
 import LoadingSpinner from './LoadingSpinner'; 
 import { BookOpenIcon as BookOpenIconFC , CogIcon as CogIconFC, InfoIcon, PlusIcon, ShapesIcon, QUESTION_CONFIG_SECTIONS } from '../../config';
@@ -21,7 +21,6 @@ interface DraftQuestionPaperViewProps {
   onDeleteDiagram: (questionId: string) => void; 
   onRegenerateDiagram: (questionId: string) => void; 
   onAddCustomQuestionToSection: (text: string, category: QuestionCategory, generateDiagram: boolean) => Promise<void>;
-  addNotification: NotificationFunction;
 }
 
 export const DraftQuestionPaperView: React.FC<DraftQuestionPaperViewProps> = ({
@@ -37,7 +36,6 @@ export const DraftQuestionPaperView: React.FC<DraftQuestionPaperViewProps> = ({
   onDeleteDiagram,
   onRegenerateDiagram,
   onAddCustomQuestionToSection,
-  addNotification,
 }) => {
 
   const [addingToSection, setAddingToSection] = useState<QuestionCategory | null>(null);
@@ -71,12 +69,6 @@ export const DraftQuestionPaperView: React.FC<DraftQuestionPaperViewProps> = ({
       handleCloseAddForm(); 
     } catch (error) {
       console.error("Error adding custom question in section:", error);
-      addNotification({
-        type: 'error',
-        title: 'Failed to Add Question',
-        message: 'An error occurred while adding the custom question.',
-        duration: 4000
-      });
     } finally {
       setIsSubmittingCustomInSection(false);
     }
@@ -235,7 +227,6 @@ export const DraftQuestionPaperView: React.FC<DraftQuestionPaperViewProps> = ({
                         onUpdateText={(newText) => onUpdateQuestionText(qItem.id, newText)}
                         onDeleteDiagram={onDeleteDiagram}
                         onRegenerateDiagram={onRegenerateDiagram}
-                        addNotification={addNotification}
                         />
                     ))}
                     </div>
