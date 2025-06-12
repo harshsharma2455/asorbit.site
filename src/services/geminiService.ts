@@ -1,4 +1,4 @@
-import { GoogleGenerativeAI } from '@google/genai';
+import { GoogleGenerativeAI } from '@google/generative-ai';
 import type { 
   PaperConfiguration, 
   QuestionItem, 
@@ -14,11 +14,12 @@ export class GeminiService {
   private model: any;
 
   constructor() {
-    if (!process.env.API_KEY) {
-      throw new Error("API key not configured. Please set the process.env.API_KEY environment variable.");
+    const apiKey = "AIzaSyCQrz2imBYmXUX6wSat-dJL7jfR1DAtHig";
+    if (!apiKey) {
+      throw new Error("API key not configured. Please set the API key.");
     }
     
-    this.genAI = new GoogleGenerativeAI(process.env.API_KEY);
+    this.genAI = new GoogleGenerativeAI(apiKey);
     this.model = this.genAI.getGenerativeModel({ model: GEMINI_MODEL_TEXT });
   }
 
