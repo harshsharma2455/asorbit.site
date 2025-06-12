@@ -325,9 +325,7 @@ export const ConfigurationPanel: React.FC<ConfigurationPanelProps> = ({ onSubmit
     }
      if (grandTotalConfiguredMarks !== targetMarksParsed) {
         let alertMsg = `Configuration Error: Grand total configured marks (${grandTotalConfiguredMarks}) do not match target marks (${targetMarksParsed}).`;
-        if (!isDistributionConfigOpen && !isAI
-
-MarksTargetAchievable && marksForAIFromConfig > 0) {
+        if (!isDistributionConfigOpen && !isAIMarksTargetAchievable && marksForAIFromConfig > 0) {
             alertMsg += ` This might be because the automatic AI distribution could not precisely meet its sub-target of ${marksForAIFromConfig} marks (achieved ${calculatedAIMarks}). Try adjusting total marks, custom questions, or use manual AI configuration.`;
         } else {
             alertMsg += ` Please review configuration.`;

@@ -3,7 +3,7 @@ import PaperGeneratorPage from './App';
 import LandingPage from './pages/LandingPage';
 import DiagramGeneratorStandalonePage from './pages/DiagramGeneratorStandalonePage';
 import AppHeader from './components/layout/AppHeader';
-import NotificationSystem from './components/ui/NotificationSystem';
+import NotificationSystem from './components/ui/NotificationSystem.tsx';
 import { GeminiService } from './services';
 import { API_KEY_ERROR_MESSAGE } from './config';
 import { LightBulbIcon } from './config';
