@@ -11,7 +11,8 @@ import type {
   AppView as PaperGeneratorView, 
   PaperConfiguration, 
   PointDef, LineDef, SegmentDef, CircleDef, ArcDef, PolygonDef, FunctionGraphDef, AngleDef, EllipseDef, SemicircleDef, TextDef, GeometricElement,
-  QuestionCategory 
+  QuestionCategory,
+  NotificationFunction
 } from './types';
 import { LightBulbIcon, QUESTION_CONFIG_SECTIONS, API_KEY_ERROR_MESSAGE } from './config'; 
 import JXG from 'jsxgraph';
@@ -21,9 +22,10 @@ interface PaperGeneratorPageProps {
   setGlobalError: (error: string | null) => void; 
   globalError?: string | null; 
   onNavigate: (page: 'landing' | 'paperGenerator' | 'diagramGenerator') => void;
+  addNotification: NotificationFunction;
 }
 
-const PaperGeneratorPage: React.FC<PaperGeneratorPageProps> = ({ geminiService, setGlobalError, globalError, onNavigate }) => {
+const PaperGeneratorPage: React.FC<PaperGeneratorPageProps> = ({ geminiService, setGlobalError, globalError, onNavigate, addNotification }) => {
   const [currentView, setCurrentView] = useState<PaperGeneratorView>('config');
   const [paperConfig, setPaperConfig] = useState<PaperConfiguration | null>(null);
   const [draftQuestions, setDraftQuestions] = useState<QuestionItem[]>([]);
@@ -78,15 +80,34 @@ const PaperGeneratorPage: React.FC<PaperGeneratorPageProps> = ({ geminiService, 
       setDraftQuestions(initialQuestions); 
       setCurrentView('draft'); 
 
+      addNotification({
+        type: 'success',
+        title: 'Draft Generated',
+        message: `Successfully generated ${initialQuestions.length} questions for your paper.`,
+        duration: 4000
+      });
+
     } catch (error) { 
       if (error instanceof Error) {
         if (error.message === API_KEY_ERROR_MESSAGE) {
           setGlobalError(error.message);
         } else {
           setLocalError(`Error during draft text generation: ${error.message}. Please check console or try adjusting configuration.`);
+          addNotification({
+            type: 'error',
+            title: 'Generation Failed',
+            message: error.message,
+            duration: 6000
+          });
         }
       } else {
         setLocalError("An unknown error occurred while generating the draft question paper text.");
+        addNotification({
+          type: 'error',
+          title: 'Unknown Error',
+          message: 'An unexpected error occurred during generation.',
+          duration: 6000
+        });
       }
       // Keep any potentially partially loaded questions if error occurs after some are set.
       // If initialQuestions is empty, it means error was before any questions were formed.
@@ -124,7 +145,7 @@ const PaperGeneratorPage: React.FC<PaperGeneratorPageProps> = ({ geminiService, 
         setIsLoadingInitialDiagrams(false);
     }
 
-  }, [geminiService, setGlobalError]); 
+  }, [geminiService, setGlobalError, addNotification]); 
 
   const handleBackToConfig = useCallback(() => {
     setCurrentView('config');
@@ -168,6 +189,12 @@ const PaperGeneratorPage: React.FC<PaperGeneratorPageProps> = ({ geminiService, 
       setDraftQuestions(prev => prev.map(q =>
         q.id === questionId ? { ...q, diagramData: data, isLoadingDiagram: false } : q
       ));
+      addNotification({
+        type: 'success',
+        title: 'Diagram Generated',
+        message: 'Successfully created diagram for your question.',
+        duration: 3000
+      });
     } catch (err) {
       let message = 'An unknown error occurred during diagram generation.';
       if (err instanceof Error) {
@@ -180,18 +207,36 @@ const PaperGeneratorPage: React.FC<PaperGeneratorPageProps> = ({ geminiService, 
       setDraftQuestions(prev => prev.map(q =>
         q.id === questionId ? { ...q, diagramError: { message }, diagramData: errorDiagramData, isLoadingDiagram: false } : q
       ));
+      addNotification({
+        type: 'error',
+        title: 'Diagram Generation Failed',
+        message: message,
+        duration: 5000
+      });
     }
-  }, [geminiService]);
+  }, [geminiService, addNotification]);
   
   const handleDeleteQuestion = useCallback((questionId: string) => {
     setDraftQuestions(prev => prev.filter(q => q.id !== questionId));
-  }, []);
+    addNotification({
+      type: 'info',
+      title: 'Question Deleted',
+      message: 'Question has been removed from your paper.',
+      duration: 3000
+    });
+  }, [addNotification]);
   
   const handleUpdateQuestionText = useCallback((questionId: string, newText: string) => {
     setDraftQuestions(prev => prev.map(q =>
       q.id === questionId ? { ...q, text: newText, diagramOriginalQuestionPrompt: newText } : q 
     ));
-  }, []);
+    addNotification({
+      type: 'success',
+      title: 'Question Updated',
+      message: 'Question text has been successfully updated.',
+      duration: 3000
+    });
+  }, [addNotification]);
 
   const handleDeleteDiagram = useCallback((questionId: string) => {
     setDraftQuestions(prev => prev.map(q =>
@@ -203,7 +248,13 @@ const PaperGeneratorPage: React.FC<PaperGeneratorPageProps> = ({ geminiService, 
         isDiagramRecommended: false, 
       } : q
     ));
-  }, []);
+    addNotification({
+      type: 'info',
+      title: 'Diagram Removed',
+      message: 'Diagram has been deleted from the question.',
+      duration: 3000
+    });
+  }, [addNotification]);
 
   const handleRegenerateDiagram = useCallback(async (questionId: string) => {
     const questionToRegenerate = draftQuestions.find(q => q.id === questionId);
@@ -217,6 +268,12 @@ const PaperGeneratorPage: React.FC<PaperGeneratorPageProps> = ({ geminiService, 
       setDraftQuestions(prev => prev.map(q =>
         q.id === questionId ? { ...q, diagramData: data, isLoadingDiagram: false } : q
       ));
+      addNotification({
+        type: 'success',
+        title: 'Diagram Regenerated',
+        message: 'Successfully created a new diagram for your question.',
+        duration: 3000
+      });
     } catch (err) {
       let message = 'An unknown error occurred during diagram regeneration.';
       if (err instanceof Error) message = `Failed to regenerate diagram: ${err.message}`;
@@ -227,8 +284,14 @@ const PaperGeneratorPage: React.FC<PaperGeneratorPageProps> = ({ geminiService, 
       setDraftQuestions(prev => prev.map(q =>
         q.id === questionId ? { ...q, diagramError: { message }, diagramData: errorDiagramData, isLoadingDiagram: false } : q
       ));
+      addNotification({
+        type: 'error',
+        title: 'Regeneration Failed',
+        message: message,
+        duration: 5000
+      });
     }
-  }, [geminiService, draftQuestions]);
+  }, [geminiService, draftQuestions, addNotification]);
 
   const handleAddCustomQuestionToSection = useCallback(
     async (text: string, category: QuestionCategory, generateDiagram: boolean) => {
@@ -242,12 +305,26 @@ const PaperGeneratorPage: React.FC<PaperGeneratorPageProps> = ({ geminiService, 
         diagramOriginalQuestionPrompt: text,
       };
       setDraftQuestions(prev => [...prev, newQuestion]);
+      
+      addNotification({
+        type: 'success',
+        title: 'Question Added',
+        message: 'Custom question has been added to your paper.',
+        duration: 3000
+      });
+
       if (generateDiagram) {
         try {
           const diagramData = await geminiService.generateDiagramDescription(text);
           setDraftQuestions(prev => prev.map(q =>
             q.id === newQuestionId ? { ...q, diagramData, isLoadingDiagram: false, diagramError: null } : q
           ));
+          addNotification({
+            type: 'success',
+            title: 'Diagram Generated',
+            message: 'Diagram has been created for your custom question.',
+            duration: 3000
+          });
         } catch (diagError: any) {
           const errorMsg = diagError.message || 'Custom question diagram generation failed';
           const errorDiagramData: DiagramData = {
@@ -258,9 +335,15 @@ const PaperGeneratorPage: React.FC<PaperGeneratorPageProps> = ({ geminiService, 
           setDraftQuestions(prev => prev.map(q =>
             q.id === newQuestionId ? { ...q, diagramData: errorDiagramData, diagramError: { message: errorMsg }, isLoadingDiagram: false } : q
           ));
+          addNotification({
+            type: 'warning',
+            title: 'Diagram Generation Failed',
+            message: 'Question added but diagram generation failed.',
+            duration: 4000
+          });
         }
       }
-    }, [geminiService]
+    }, [geminiService, addNotification]
   );
 
   const getResolvedPointForFinalize = (
@@ -285,6 +368,13 @@ const PaperGeneratorPage: React.FC<PaperGeneratorPageProps> = ({ geminiService, 
     setIsFinalizingPaper(true);
     setLocalError(null);
     setGlobalError(null);
+    
+    addNotification({
+      type: 'info',
+      title: 'Finalizing Paper',
+      message: 'Converting diagrams to static images. This may take a moment...',
+      duration: 4000
+    });
     
     if (typeof JXG !== 'undefined' && JXG.Options) {
         (JXG.Options as any).renderer = 'svg';
@@ -740,12 +830,25 @@ const PaperGeneratorPage: React.FC<PaperGeneratorPageProps> = ({ geminiService, 
     } catch (loopError) { 
         console.error("[FinalizePaper CRITICAL LOOP ERROR] An error occurred during the question finalization loop:", loopError);
         setGlobalError(`A critical error occurred while processing questions. Error: ${(loopError as Error).message}`);
+        addNotification({
+          type: 'error',
+          title: 'Finalization Failed',
+          message: 'A critical error occurred while processing questions.',
+          duration: 6000
+        });
     }
 
     setFinalQuestions(finalizedQuestionItems);
     setCurrentView('final');
     setIsFinalizingPaper(false);
-  }, [geminiService, draftQuestions, setGlobalError]); 
+    
+    addNotification({
+      type: 'success',
+      title: 'Paper Finalized',
+      message: `Successfully finalized your question paper with ${finalizedQuestionItems.length} questions.`,
+      duration: 4000
+    });
+  }, [geminiService, draftQuestions, setGlobalError, addNotification]); 
 
   if (localError && !globalError) { 
     return (
@@ -799,6 +902,7 @@ const PaperGeneratorPage: React.FC<PaperGeneratorPageProps> = ({ geminiService, 
           onDeleteDiagram={handleDeleteDiagram}
           onRegenerateDiagram={handleRegenerateDiagram}
           onAddCustomQuestionToSection={handleAddCustomQuestionToSection}
+          addNotification={addNotification}
         />
       )}
       

@@ -1,16 +1,19 @@
 import React, { useState, useCallback, useMemo, useEffect, useRef } from 'react';
-import PaperGeneratorPage from './App';
+import NewEducationalApp from './NewApp';
 import LandingPage from './pages/LandingPage';
 import DiagramGeneratorStandalonePage from './pages/DiagramGeneratorStandalonePage';
 import AppHeader from './components/layout/AppHeader';
-import NotificationSystem from './components/ui/NotificationSystem.tsx';
+import NotificationSystem from './components/ui/NotificationSystem';
+import AuthModal from './components/auth/AuthModal';
+import SubscriptionModal from './components/subscription/SubscriptionModal';
 import { GeminiService } from './services';
 import { API_KEY_ERROR_MESSAGE } from './config';
 import { LightBulbIcon } from './config';
+import type { UserProfile } from './types';
 
-export type AppPage = 'landing' | 'paperGenerator' | 'diagramGenerator';
+export type AppPage = 'landing' | 'paperGenerator' | 'diagramGenerator' | 'doubtSolver' | 'dashboard';
 
-const MainApp: React.FC = () => {
+const NewMainApp: React.FC = () => {
   const [currentPage, setCurrentPage] = useState<AppPage>('landing');
   const [globalError, setGlobalError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -21,6 +24,13 @@ const MainApp: React.FC = () => {
     message: string;
     duration?: number;
   }>>([]);
+  
+  // Authentication state
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [currentUser, setCurrentUser] = useState<UserProfile | null>(null);
+  const [showAuthModal, setShowAuthModal] = useState(false);
+  const [showSubscriptionModal, setShowSubscriptionModal] = useState(false);
+  const [authMode, setAuthMode] = useState<'signin' | 'signup'>('signin');
   
   const geminiServiceInstanceRef = useRef<GeminiService | null>(null);
 
@@ -44,11 +54,6 @@ const MainApp: React.FC = () => {
     if (geminiServiceInstanceRef.current) {
       return geminiServiceInstanceRef.current;
     }
-    if (!process.env.API_KEY) {
-      setGlobalError(API_KEY_ERROR_MESSAGE);
-      console.error(API_KEY_ERROR_MESSAGE);
-      throw new Error(API_KEY_ERROR_MESSAGE);
-    }
     try {
       const instance = new GeminiService();
       geminiServiceInstanceRef.current = instance;
@@ -63,7 +68,7 @@ const MainApp: React.FC = () => {
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : "Failed to initialize AI Service.";
       setGlobalError(errorMessage);
-      console.error("Error initializing GeminiService in MainApp:", errorMessage, error);
+      console.error("Error initializing GeminiService in NewMainApp:", errorMessage, error);
       addNotification({
         type: 'error',
         title: 'Initialization Failed',
@@ -81,6 +86,19 @@ const MainApp: React.FC = () => {
         // Simulate minimum loading time for better UX
         await new Promise(resolve => setTimeout(resolve, 2000));
         getEnsuredGeminiService();
+        
+        // Check for existing authentication (in real app, this would check localStorage/cookies)
+        const savedUser = localStorage.getItem('asorbit_user');
+        if (savedUser) {
+          try {
+            const user = JSON.parse(savedUser);
+            setCurrentUser(user);
+            setIsAuthenticated(true);
+            setCurrentPage('dashboard');
+          } catch (e) {
+            localStorage.removeItem('asorbit_user');
+          }
+        }
       } catch (error) {
         // Error is already handled by getEnsuredGeminiService
       } finally {
@@ -92,6 +110,19 @@ const MainApp: React.FC = () => {
   }, [getEnsuredGeminiService]);
 
   const handleNavigate = useCallback((page: AppPage) => {
+    // Check if authentication is required for certain pages
+    if (!isAuthenticated && (page === 'dashboard' || page === 'doubtSolver')) {
+      setShowAuthModal(true);
+      setAuthMode('signin');
+      addNotification({
+        type: 'info',
+        title: 'Authentication Required',
+        message: 'Please sign in to access this feature.',
+        duration: 4000
+      });
+      return;
+    }
+
     setCurrentPage(page);
     window.scrollTo({ top: 0, behavior: 'smooth' });
     
@@ -99,10 +130,78 @@ const MainApp: React.FC = () => {
     addNotification({
       type: 'info',
       title: 'Navigation',
-      message: `Switched to ${page === 'paperGenerator' ? 'Paper Generator' : page === 'diagramGenerator' ? 'Diagram Generator' : 'Home'}`,
+      message: `Switched to ${
+        page === 'paperGenerator' ? 'Paper Generator' : 
+        page === 'diagramGenerator' ? 'Diagram Generator' : 
+        page === 'doubtSolver' ? 'Doubt Solver' :
+        page === 'dashboard' ? 'Dashboard' :
+        'Home'
+      }`,
       duration: 2000
     });
+  }, [addNotification, isAuthenticated]);
+
+  const handleAuthRequired = useCallback(() => {
+    setShowAuthModal(true);
+    setAuthMode('signup');
+    addNotification({
+      type: 'info',
+      title: 'Upgrade Required',
+      message: 'Sign up for a free account to continue using our services.',
+      duration: 4000
+    });
   }, [addNotification]);
+
+  const handleAuthSuccess = useCallback((user: UserProfile) => {
+    setCurrentUser(user);
+    setIsAuthenticated(true);
+    setShowAuthModal(false);
+    localStorage.setItem('asorbit_user', JSON.stringify(user));
+    
+    addNotification({
+      type: 'success',
+      title: 'Welcome!',
+      message: `Successfully signed in as ${user.name}`,
+      duration: 4000
+    });
+
+    // Navigate to dashboard after successful auth
+    setCurrentPage('dashboard');
+  }, [addNotification]);
+
+  const handleSignOut = useCallback(() => {
+    setCurrentUser(null);
+    setIsAuthenticated(false);
+    localStorage.removeItem('asorbit_user');
+    setCurrentPage('landing');
+    
+    addNotification({
+      type: 'info',
+      title: 'Signed Out',
+      message: 'You have been successfully signed out.',
+      duration: 3000
+    });
+  }, [addNotification]);
+
+  const handleSubscriptionUpgrade = useCallback((plan: 'premium' | 'pro') => {
+    if (currentUser) {
+      const updatedUser = {
+        ...currentUser,
+        subscription: plan,
+        subscriptionExpiry: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000) // 30 days from now
+      };
+      setCurrentUser(updatedUser);
+      localStorage.setItem('asorbit_user', JSON.stringify(updatedUser));
+      setShowSubscriptionModal(false);
+      
+      addNotification({
+        type: 'success',
+        title: 'Subscription Upgraded!',
+        message: `Welcome to ${plan.charAt(0).toUpperCase() + plan.slice(1)}! Enjoy your enhanced features.`,
+        duration: 5000
+      });
+    }
+  }, [currentUser, addNotification]);
 
   const geminiService = useMemo(() => {
     try {
@@ -233,12 +332,18 @@ const MainApp: React.FC = () => {
       setGlobalError,
       globalError,
       onNavigate: handleNavigate,
-      addNotification
+      addNotification,
+      isAuthenticated,
+      userSubscription: currentUser?.subscription || 'free',
+      onAuthRequired: handleAuthRequired
     };
 
     switch (currentPage) {
+      case 'dashboard':
+      case 'doubtSolver':
+        return <NewEducationalApp {...pageProps} />;
       case 'paperGenerator':
-        return <PaperGeneratorPage {...pageProps} />;
+        return <NewEducationalApp {...pageProps} />;
       case 'diagramGenerator':
         return <DiagramGeneratorStandalonePage {...pageProps} />;
       case 'landing':
@@ -256,7 +361,15 @@ const MainApp: React.FC = () => {
       </div>
       
       <div className="relative z-10 flex flex-col items-center p-4 md:p-8">
-        <AppHeader onNavigate={handleNavigate} currentAppPage={currentPage} />
+        <AppHeader 
+          onNavigate={handleNavigate} 
+          currentAppPage={currentPage}
+          isAuthenticated={isAuthenticated}
+          currentUser={currentUser}
+          onSignOut={handleSignOut}
+          onShowAuth={() => setShowAuthModal(true)}
+          onShowSubscription={() => setShowSubscriptionModal(true)}
+        />
         
         <main className="w-full mt-8 animate-fade-in-up">
           {renderPage()}
@@ -276,8 +389,27 @@ const MainApp: React.FC = () => {
       
       {/* Notification System */}
       <NotificationSystem notifications={notifications} />
+      
+      {/* Auth Modal */}
+      <AuthModal
+        isOpen={showAuthModal}
+        onClose={() => setShowAuthModal(false)}
+        mode={authMode}
+        onModeChange={setAuthMode}
+        onAuthSuccess={handleAuthSuccess}
+        addNotification={addNotification}
+      />
+      
+      {/* Subscription Modal */}
+      <SubscriptionModal
+        isOpen={showSubscriptionModal}
+        onClose={() => setShowSubscriptionModal(false)}
+        currentSubscription={currentUser?.subscription || 'free'}
+        onUpgrade={handleSubscriptionUpgrade}
+        addNotification={addNotification}
+      />
     </div>
   );
 };
 
-export default MainApp;
+export default NewMainApp;

@@ -1,31 +1,22 @@
-
 import React, { useState, useCallback } from 'react';
 import { GeminiService } from '../services'; 
-import type { DiagramData, AppError } from '../types';
+import type { DiagramData, AppError, NotificationFunction } from '../types';
 import { DiagramPromptInput } from '../components/features/QuestionInput';
 import { DiagramDisplay } from '../components/features/DiagramDisplay';
 import LoadingSpinner from '../components/core/LoadingSpinner'; 
 import { LightBulbIcon, ShapesIcon, API_KEY_ERROR_MESSAGE, RedoIcon } from '../config';
 
-// Remove EditIcon as it's no longer used
-// const EditIcon: React.FC<{ className?: string }> = ({ className = "w-5 h-5" }) => (
-//     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className={className}>
-//         <path d="M2.695 14.763l-1.262 3.154a.5.5 0 0 0 .65.65l3.155-1.262a4 4 0 0 0 1.343-.885L17.5 5.5a2.121 2.121 0 0 0-3-3L3.58 13.42a4 4 0 0 0-.885 1.343z" />
-//     </svg>
-// );
-
-
 interface DiagramGeneratorStandalonePageProps {
   geminiService: GeminiService;
   setGlobalError: (error: string | null) => void;
+  addNotification: NotificationFunction;
 }
 
-const DiagramGeneratorStandalonePage: React.FC<DiagramGeneratorStandalonePageProps> = ({ geminiService, setGlobalError }) => {
+const DiagramGeneratorStandalonePage: React.FC<DiagramGeneratorStandalonePageProps> = ({ geminiService, setGlobalError, addNotification }) => {
   const [diagramData, setDiagramData] = useState<DiagramData | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [error, setError] = useState<AppError | null>(null);
   const [currentPrompt, setCurrentPrompt] = useState<string>('');
-  // Removed isEditingDiagram state
 
   const handleGenerateDiagram = useCallback(async (prompt: string) => {
     setIsLoading(true);
@@ -33,32 +24,48 @@ const DiagramGeneratorStandalonePage: React.FC<DiagramGeneratorStandalonePagePro
     setDiagramData(null);
     setCurrentPrompt(prompt);
     setGlobalError(null);
-    // Removed setIsEditingDiagram(false);
 
     try {
       const data = await geminiService.generateDiagramDescription(prompt);
       setDiagramData(data);
       if (data.errorParsing) {
         setError({ message: data.description || "Failed to parse diagram data from AI." });
+        addNotification({
+          type: 'warning',
+          title: 'Diagram Generated with Issues',
+          message: 'Diagram was created but with some parsing issues.',
+          duration: 4000
+        });
+      } else {
+        addNotification({
+          type: 'success',
+          title: 'Diagram Generated',
+          message: 'Successfully created your diagram!',
+          duration: 3000
+        });
       }
     } catch (err: any) {
       if (err.message === API_KEY_ERROR_MESSAGE) {
         setGlobalError(API_KEY_ERROR_MESSAGE);
       } else {
         setError({ message: err.message || "An unknown error occurred during diagram generation." });
+        addNotification({
+          type: 'error',
+          title: 'Generation Failed',
+          message: err.message || 'An error occurred while generating the diagram.',
+          duration: 5000
+        });
       }
     } finally {
       setIsLoading(false);
     }
-  }, [geminiService, setGlobalError]);
+  }, [geminiService, setGlobalError, addNotification]);
 
   const handleRegenerate = () => {
     if (currentPrompt) {
       handleGenerateDiagram(currentPrompt);
     }
   };
-
-  // Removed toggleEditMode, handleFinalizeEdits, handleCancelEdits
 
   return (
     <div className="w-full max-w-3xl mx-auto space-y-8 p-4 sm:p-0">
@@ -117,9 +124,8 @@ const DiagramGeneratorStandalonePage: React.FC<DiagramGeneratorStandalonePagePro
           <DiagramDisplay 
             data={diagramData} 
             originalQuestion={currentPrompt} 
-            // Removed isEditing prop
+            addNotification={addNotification}
           />
-          {/* Removed Edit Mode UI and Edit Diagram button */}
         </div>
       )}
       

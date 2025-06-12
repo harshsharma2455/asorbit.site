@@ -1,7 +1,10 @@
-import React, { useEffect, useRef } from 'react';
-import type { QuestionItem, AppError } from '../../types';
+import React, { useEffect, useRef, useState } from 'react';
+import type { QuestionItem, AppError, NotificationFunction } from '../../types';
 import { DiagramDisplay } from './DiagramDisplay';
-import LoadingSpinner from '../core/LoadingSpinner'; // Import new loader
+import LoadingSpinner from '../core/LoadingSpinner';
+import Card from '../ui/Card';
+import InteractiveButton from '../ui/InteractiveButton';
+import Tooltip from '../ui/Tooltip';
 import { TrashIcon, RedoIcon, XCircleIcon } from '../../config'; 
 import { markdownTableToHtml } from '../../utils';
 
@@ -30,6 +33,7 @@ interface QuestionPaperItemProps {
   onUpdateText?: (newText: string) => void; 
   onDeleteDiagram: (questionId: string) => void; 
   onRegenerateDiagram: (questionId: string) => void; 
+  addNotification: NotificationFunction;
 }
 
 export const QuestionPaperItem: React.FC<QuestionPaperItemProps> = ({
@@ -40,11 +44,13 @@ export const QuestionPaperItem: React.FC<QuestionPaperItemProps> = ({
   onUpdateText, 
   onDeleteDiagram,
   onRegenerateDiagram,
+  addNotification,
 }) => {
   const { id, text, category, marks, diagramData, isLoadingDiagram, diagramError, diagramOriginalQuestionPrompt, isDiagramRecommended } = questionItem;
 
-  const [editText, setEditText] = React.useState(text);
-  const [isEditing, setIsEditing] = React.useState(false);
+  const [editText, setEditText] = useState(text);
+  const [isEditing, setIsEditing] = useState(false);
+  const [isExpanded, setIsExpanded] = useState(true);
   const contentRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -69,7 +75,6 @@ export const QuestionPaperItem: React.FC<QuestionPaperItemProps> = ({
     }
   }, [text, isEditing]);
 
-
   const handleTextChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     setEditText(e.target.value);
   };
@@ -86,128 +91,237 @@ export const QuestionPaperItem: React.FC<QuestionPaperItemProps> = ({
     setIsEditing(false);
   };
 
-
   return (
-    <article aria-labelledby={`question-title-${id}`} className="p-6 bg-white shadow-lg rounded-lg border border-slate-200 space-y-4">
-      <header className="flex justify-between items-start gap-4">
-        <div className="flex-grow">
-          <h4 id={`question-title-${id}`} className="text-lg font-semibold text-primary-700 mb-1">
-            Q{questionNumber}.
-            <span className="ml-2 text-sm font-normal text-slate-500">({category} - {marks} Marks)</span>
-          </h4>
-          {isEditing && onUpdateText ? (
-            <div className="space-y-2">
-              <textarea
-                value={editText}
-                onChange={handleTextChange}
-                rows={Math.max(3, editText.split('\n').length + 2)} 
-                className="w-full p-2 border border-primary-300 rounded-md focus:ring-2 focus:ring-primary-500 bg-slate-50 text-slate-800 placeholder-slate-400 text-sm"
-                autoFocus
-                placeholder="Enter question text (Markdown for tables, $LaTeX$ for math)..."
-              />
-              <div className="flex space-x-2">
-                <button onClick={handleSaveText} className="px-3 py-1 text-xs bg-accent-500 text-white hover:bg-accent-600 rounded-md transition-colors">Save</button>
-                <button onClick={handleCancelEdit} className="px-3 py-1 text-xs bg-slate-200 text-slate-700 hover:bg-slate-300 rounded-md transition-colors">Cancel</button>
+    <Card 
+      variant="elevated" 
+      padding="none" 
+      className="overflow-hidden animate-fade-in-up border-l-4 border-l-primary-500"
+      hoverable
+    >
+      {/* Header */}
+      <div className="bg-gradient-to-r from-primary-50 to-accent-50 px-6 py-4 border-b border-slate-200">
+        <div className="flex justify-between items-start gap-4">
+          <div className="flex-grow">
+            <div className="flex items-center space-x-3 mb-2">
+              <h4 className="text-xl font-bold text-primary-700 flex items-center space-x-2">
+                <span className="bg-primary-500 text-white w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold">
+                  {questionNumber}
+                </span>
+                <span>Question {questionNumber}</span>
+              </h4>
+              
+              <div className="flex items-center space-x-2">
+                <span className="px-3 py-1 bg-primary-100 text-primary-700 text-xs font-semibold rounded-full">
+                  {category}
+                </span>
+                <span className="px-3 py-1 bg-accent-100 text-accent-700 text-xs font-semibold rounded-full">
+                  {marks} Marks
+                </span>
               </div>
             </div>
-          ) : (
-            <div
-              ref={contentRef}
-              className="text-slate-700 text-base leading-relaxed question-content-display"
-              dangerouslySetInnerHTML={{ __html: markdownTableToHtml(text) }}
-            />
-          )}
-        </div>
-        <div className="flex flex-col space-y-2 flex-shrink-0">
-          <button
-            onClick={onDeleteClick}
-            aria-label={`Delete question ${questionNumber}`}
-            title="Delete Question"
-            className="p-2 text-slate-400 hover:text-red-600 hover:bg-red-100 rounded-md transition-colors"
-          >
-            <TrashIcon />
-          </button>
-          {onUpdateText && !isEditing && (
-             <button
-                onClick={() => setIsEditing(true)}
-                aria-label={`Edit question ${questionNumber} text`}
-                title="Edit Question Text"
-                className="p-2 text-slate-400 hover:text-primary-600 hover:bg-primary-100 rounded-md transition-colors"
-            >
-                <EditIcon />
-            </button>
-          )}
-        </div>
-      </header>
-
-      <div className="pl-1 space-y-3">
-        <div className="relative group diagram-loading-container"> 
-            {isLoadingDiagram && (
-              <div className="absolute inset-0 flex items-center justify-center bg-slate-50/80 z-20 rounded-md">
-                 <LoadingSpinner size="small" text="Loading Diagram..." />
-              </div>
-            )}
-
-            {!isLoadingDiagram && diagramData && (
-                <DiagramDisplay data={diagramData} originalQuestion={diagramOriginalQuestionPrompt || editText} />
-            )}
-            {!isLoadingDiagram && diagramError && !diagramData?.errorParsing && ( 
-                 <div className="p-3 bg-red-50 border border-red-200 text-red-700 rounded-md text-sm min-h-[150px] flex items-center justify-center w-full">
-                    <p><span className="font-semibold">Diagram Error:</span> {diagramError.message}</p>
-                 </div>
-            )}
-
-
-            {!isLoadingDiagram && (diagramData || diagramError) && (
-                <button
-                    onClick={() => onDeleteDiagram(id)}
-                    title="Delete Diagram"
-                    aria-label="Delete diagram for this question"
-                    className="absolute top-2 right-2 p-1 bg-white/80 hover:bg-red-100 text-slate-600 hover:text-red-700 rounded-full shadow-lg hover:shadow-xl transition-all duration-150 z-30"
+          </div>
+          
+          {/* Action Buttons */}
+          <div className="flex items-center space-x-2">
+            <Tooltip content="Collapse/Expand">
+              <button
+                onClick={() => setIsExpanded(!isExpanded)}
+                className="p-2 text-slate-400 hover:text-primary-600 hover:bg-primary-100 rounded-lg transition-all duration-200"
+              >
+                <svg 
+                  className={`w-5 h-5 transition-transform duration-200 ${isExpanded ? 'rotate-180' : ''}`} 
+                  fill="none" 
+                  stroke="currentColor" 
+                  viewBox="0 0 24 24"
                 >
-                    <XCircleIcon className="w-5 h-5" />
-                </button>
-            )}
-            {!isLoadingDiagram && (diagramData || diagramError || (isDiagramRecommended && !diagramData && !diagramError)) && (
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                </svg>
+              </button>
+            </Tooltip>
+            
+            {onUpdateText && !isEditing && (
+              <Tooltip content="Edit Question">
                 <button
-                    onClick={() => onRegenerateDiagram(id)}
-                    title="Regenerate Diagram"
-                    aria-label="Regenerate diagram for this question"
-                    className={`absolute top-2 ${ (diagramData || diagramError) ? 'right-10' : 'right-2' } p-1 bg-white/80 hover:bg-blue-100 text-slate-600 hover:text-blue-700 rounded-full shadow-lg hover:shadow-xl transition-all duration-150 z-30`}
+                  onClick={() => setIsEditing(true)}
+                  className="p-2 text-slate-400 hover:text-primary-600 hover:bg-primary-100 rounded-lg transition-all duration-200"
                 >
-                    <RedoIcon className="w-5 h-5" />
+                  <EditIcon />
                 </button>
+              </Tooltip>
             )}
-            {!isLoadingDiagram && !diagramData && !diagramError && (
-              <div className="min-h-[50px] w-full flex items-center justify-center">
-                 {/* This space is intentionally kept for layout consistency if no diagram elements are present,
-                     but it's within diagram-loading-container which has its own styling. 
-                     The informational messages below handle text feedback.
-                 */}
-              </div> 
-            )}
+            
+            <Tooltip content="Delete Question">
+              <button
+                onClick={onDeleteClick}
+                className="p-2 text-slate-400 hover:text-red-600 hover:bg-red-100 rounded-lg transition-all duration-200"
+              >
+                <TrashIcon />
+              </button>
+            </Tooltip>
+          </div>
         </div>
-
-        {!diagramData && !isLoadingDiagram && !diagramError && isDiagramRecommended && (
-           <p className="text-sm text-amber-600 italic py-2 px-3 bg-amber-50 border border-amber-200 rounded-md">
-             AI recommends a diagram for this question.
-           </p>
-        )}
-         {!diagramData && !isLoadingDiagram && !diagramError && !isDiagramRecommended && (
-           <p className="text-sm text-slate-500 italic py-2">No diagram generated yet. You can generate one if needed.</p>
-        )}
       </div>
 
-      <footer className="mt-4 pt-4 border-t border-slate-200 flex flex-wrap gap-3 items-center">
-        <button
-          onClick={onGenerateDiagramClick}
-          disabled={isLoadingDiagram}
-          className="px-4 py-2 bg-gradient-to-r from-primary-500 to-accent-500 hover:from-primary-600 hover:to-accent-600 text-white font-medium rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-accent-400 transition-all duration-150 ease-in-out disabled:opacity-70 flex items-center justify-center space-x-2 text-sm"
-          title={diagramData && !diagramData.errorParsing ? "Open modal to refine diagram details" : "Open modal to generate diagram"}
-        >
-          <span>{diagramData && !diagramData.errorParsing ? 'Refine Diagram' : 'Generate Diagram'}</span>
-        </button>
-      </footer>
-    </article>
+      {/* Content */}
+      {isExpanded && (
+        <div className="p-6 space-y-6">
+          {/* Question Text */}
+          <div className="space-y-4">
+            {isEditing && onUpdateText ? (
+              <div className="space-y-3">
+                <label className="block text-sm font-medium text-slate-700">
+                  Edit Question Text:
+                </label>
+                <textarea
+                  value={editText}
+                  onChange={handleTextChange}
+                  rows={Math.max(3, editText.split('\n').length + 2)} 
+                  className="interactive-input w-full p-4 border-2 border-slate-200 rounded-xl focus:border-primary-500 bg-slate-50 text-slate-800 placeholder-slate-400 resize-none"
+                  autoFocus
+                  placeholder="Enter question text (Markdown for tables, $LaTeX$ for math)..."
+                />
+                <div className="flex space-x-3">
+                  <InteractiveButton 
+                    onClick={handleSaveText} 
+                    variant="primary" 
+                    size="sm"
+                    icon={<svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                    </svg>}
+                  >
+                    Save Changes
+                  </InteractiveButton>
+                  <InteractiveButton 
+                    onClick={handleCancelEdit} 
+                    variant="outline" 
+                    size="sm"
+                  >
+                    Cancel
+                  </InteractiveButton>
+                </div>
+              </div>
+            ) : (
+              <div className="prose prose-slate max-w-none">
+                <div
+                  ref={contentRef}
+                  className="text-slate-700 text-base leading-relaxed question-content-display bg-slate-50 p-4 rounded-xl border border-slate-200"
+                  dangerouslySetInnerHTML={{ __html: markdownTableToHtml(text) }}
+                />
+              </div>
+            )}
+          </div>
+
+          {/* Diagram Section */}
+          <div className="space-y-4">
+            <div className="flex items-center justify-between">
+              <h5 className="text-lg font-semibold text-slate-700 flex items-center space-x-2">
+                <svg className="w-5 h-5 text-primary-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                </svg>
+                <span>Diagram</span>
+              </h5>
+              
+              {(diagramData || diagramError) && !isLoadingDiagram && (
+                <div className="flex space-x-2">
+                  <Tooltip content="Regenerate Diagram">
+                    <button
+                      onClick={() => onRegenerateDiagram(id)}
+                      className="p-2 text-slate-400 hover:text-blue-600 hover:bg-blue-100 rounded-lg transition-all duration-200"
+                    >
+                      <RedoIcon className="w-4 h-4" />
+                    </button>
+                  </Tooltip>
+                  
+                  <Tooltip content="Delete Diagram">
+                    <button
+                      onClick={() => onDeleteDiagram(id)}
+                      className="p-2 text-slate-400 hover:text-red-600 hover:bg-red-100 rounded-lg transition-all duration-200"
+                    >
+                      <XCircleIcon className="w-4 h-4" />
+                    </button>
+                  </Tooltip>
+                </div>
+              )}
+            </div>
+
+            <div className="relative">
+              {isLoadingDiagram && (
+                <div className="diagram-loading-container">
+                  <LoadingSpinner size="medium" text="Generating Diagram..." variant="default" />
+                </div>
+              )}
+
+              {!isLoadingDiagram && diagramData && (
+                <div className="animate-fade-in">
+                  <DiagramDisplay 
+                    data={diagramData} 
+                    originalQuestion={diagramOriginalQuestionPrompt || editText} 
+                    addNotification={addNotification}
+                  />
+                </div>
+              )}
+
+              {!isLoadingDiagram && diagramError && !diagramData?.errorParsing && (
+                <Card variant="default" className="border-red-200 bg-red-50">
+                  <div className="flex items-center space-x-3 text-red-700">
+                    <svg className="w-6 h-6 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                    <div>
+                      <p className="font-semibold">Diagram Generation Failed</p>
+                      <p className="text-sm">{diagramError.message}</p>
+                    </div>
+                  </div>
+                </Card>
+              )}
+
+              {!isLoadingDiagram && !diagramData && !diagramError && (
+                <Card variant="glass" className="text-center py-8">
+                  <div className="space-y-3">
+                    <svg className="w-12 h-12 text-slate-400 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                    </svg>
+                    {isDiagramRecommended ? (
+                      <div>
+                        <p className="text-amber-600 font-medium">AI recommends a diagram for this question</p>
+                        <p className="text-slate-500 text-sm">Click below to generate one</p>
+                      </div>
+                    ) : (
+                      <p className="text-slate-500">No diagram generated yet</p>
+                    )}
+                  </div>
+                </Card>
+              )}
+            </div>
+          </div>
+
+          {/* Action Buttons */}
+          <div className="flex flex-wrap gap-3 pt-4 border-t border-slate-200">
+            <InteractiveButton
+              onClick={onGenerateDiagramClick}
+              disabled={isLoadingDiagram}
+              loading={isLoadingDiagram}
+              variant="primary"
+              icon={<svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+              </svg>}
+            >
+              {diagramData && !diagramData.errorParsing ? 'Refine Diagram' : 'Generate Diagram'}
+            </InteractiveButton>
+            
+            {isDiagramRecommended && !diagramData && (
+              <span className="inline-flex items-center px-3 py-2 bg-amber-100 text-amber-700 text-sm font-medium rounded-lg">
+                <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                AI Recommended
+              </span>
+            )}
+          </div>
+        </div>
+      )}
+    </Card>
   );
 };
+
+export default QuestionPaperItem;
