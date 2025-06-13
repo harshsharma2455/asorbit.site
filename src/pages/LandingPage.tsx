@@ -66,8 +66,8 @@ const LandingPage: React.FC<LandingPageProps> = ({ onNavigate }) => {
 
   const tools = [
     {
-      name: "AI Paper Generator",
-      description: "Construct comprehensive question papers with varied question types, marks distribution, and syllabus adherence. Add your own custom questions and let AI fill in the rest.",
+      name: "AI Question Paper Generator",
+      description: "Construct comprehensive question papers with varied question types, marks distribution, and syllabus adherence using our AI Question Paper Generator. Add your own custom questions and let AI fill in the rest.",
       icon: <PaperIcon className="w-10 h-10 text-primary-500" />,
       action: () => onNavigate('paperGenerator'),
       buttonText: "Launch Paper Generator",
@@ -76,7 +76,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ onNavigate }) => {
     },
     {
       name: "AI Diagram Generator",
-      description: "Instantly translate textual descriptions into 2D geometric diagrams, function graphs, and other visual representations for mathematics and science problems.",
+      description: "Our AI Diagram Generator instantly translates textual descriptions into 2D geometric diagrams, function graphs, and other visual representations for mathematics and science problems.",
       icon: <ShapesIconLanding className="w-10 h-10 text-accent-500" />,
       action: () => onNavigate('diagramGenerator'),
       buttonText: "Launch Diagram Tool",
@@ -128,7 +128,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ onNavigate }) => {
           <div className="text-center mb-12">
             <h2 className="text-3xl sm:text-4xl font-bold text-slate-800">Why Choose ASORBIT?</h2>
             <p className="mt-4 text-lg text-slate-600 max-w-xl mx-auto">
-              Streamline your teaching workflow and create engaging educational content with intelligent tools.
+              Streamline your teaching workflow with our AI Question Paper Generator and AI Diagram Generator. Create engaging educational content with these intelligent tools.
             </p>
           </div>
           <div className="grid md:grid-cols-3 gap-8 text-center">
@@ -149,8 +149,8 @@ const LandingPage: React.FC<LandingPageProps> = ({ onNavigate }) => {
       <section className="py-16 sm:py-20 bg-slate-100">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
-            <h2 className="text-3xl sm:text-4xl font-bold text-slate-800">Explore Our Tools</h2>
-            <p className="mt-4 text-lg text-slate-600">Powerful AI assistants designed for educators.</p>
+            <h2 className="text-3xl sm:text-4xl font-bold text-slate-800">Explore Our AI Question Paper Generator & AI Diagram Generator</h2>
+            <p className="mt-4 text-lg text-slate-600">Our AI Question Paper Generator and AI Diagram Generator are powerful AI assistants designed for educators.</p>
           </div>
           <div className="grid md:grid-cols-2 gap-8">
             {tools.map((tool) => (
@@ -160,6 +160,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ onNavigate }) => {
                 <p className="text-slate-600 text-sm mb-6 flex-grow text-center">{tool.description}</p>
                 <button
                   onClick={tool.action}
+                  aria-label={tool.name === "AI Question Paper Generator" ? "Launch AI Question Paper Generator" : "Launch AI Diagram Generator"}
                   className="mt-auto w-full inline-flex items-center justify-center px-6 py-3 text-base font-medium text-white bg-slate-700 rounded-lg shadow-sm hover:bg-slate-800 focus:outline-none focus:ring-2 focus:ring-slate-500 focus:ring-offset-2 transition-colors"
                 >
                   {tool.buttonText}

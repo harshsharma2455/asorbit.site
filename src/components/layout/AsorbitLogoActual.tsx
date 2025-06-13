@@ -12,7 +12,7 @@ const AsorbitLogoActual: React.FC<AsorbitLogoActualProps> = ({ className = "" })
         width: '120px', // Intrinsic width of the logo design before scaling
         height: '120px', // Intrinsic height of the logo design before scaling
       }}
-      aria-label="ASORBIT Logo"
+      aria-label="Asorbit Logo"
     >
       {/* Inner div for the actual logo elements */}
       <div style={{ width: '100%', height: '100%', position: 'relative', background: 'transparent', overflow: 'hidden' }}>
