@@ -4,68 +4,35 @@
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/vite.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="description" content="Asorbit provides AI-powered tools for educators, including an AI Question Paper Generator and an AI Diagram Generator. Streamline your workflow and create engaging educational content." />
-    <title>Asorbit - AI Question Paper Generator & Diagram Generator</title>
+    <title>ASORBIT - AI Powered Tools</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
       tailwind.config = {
         theme: {
           extend: {
             colors: {
-              primary: {"50":"#eff6ff","100":"#dbeafe","200":"#bfdbfe","300":"#93c5fd","400":"#60a5fa","500":"#3b82f6","600":"#2563eb","700":"#1d4ed8","800":"#1e40af","900":"#1e3a8a","950":"#172554"}, // Blue
-              accent: {"50":"#ecfdf5","100":"#d1fae5","200":"#a7f3d0","300":"#6ee7b7","400":"#34d399","500":"#10b981","600":"#059669","700":"#047857","800":"#065f46","900":"#064e3b","950":"#022c22"} // Emerald
+              primary: {"50":"#f0f9ff","100":"#e0f2fe","200":"#bae6fd","300":"#7dd3fc","400":"#38bdf8","500":"#0ea5e9","600":"#0284c7","700":"#0369a1","800":"#075985","900":"#0c4a6e","950":"#082f49"},
+              accent: {"50":"#ecfdf5","100":"#d1fae5","200":"#a7f3d0","300":"#6ee7b7","400":"#34d399","500":"#10b981","600":"#059669","700":"#047857","800":"#065f46","900":"#064e3b","950":"#022c22"},
+              gray: {"50":"#f9fafb","100":"#f3f4f6","200":"#e5e7eb","300":"#d1d5db","400":"#9ca3af","500":"#6b7280","600":"#4b5563","700":"#374151","800":"#1f2937","900":"#111827","950":"#030712"},
+              dark: {"50":"#f8fafc","100":"#f1f5f9","200":"#e2e8f0","300":"#cbd5e1","400":"#94a3b8","500":"#64748b","600":"#475569","700":"#334155","800":"#1e293b","900":"#0f172a","950":"#020617"}
             },
-            typography: (theme) => ({
-              DEFAULT: {
-                css: {
-                  '--tw-prose-body': theme('colors.slate[700]'),
-                  '--tw-prose-headings': theme('colors.primary[700]'),
-                  '--tw-prose-links': theme('colors.accent[600]'),
-                  '--tw-prose-bold': theme('colors.slate[800]'),
-                },
-              },
-              sm: { 
-                css: {
-                  fontSize: theme('fontSize.sm'),
-                  lineHeight: theme('lineHeight.relaxed'),
-                }
-              },
-              base: { 
-                 css: {
-                  fontSize: theme('fontSize.base'),
-                  lineHeight: theme('lineHeight.relaxed'),
-                }
-              },
-              print: { 
-                css: {
-                  fontSize: '10pt', 
-                  lineHeight: '1.4',
-                  '--tw-prose-body': '#333',
-                   p: {
-                    marginTop: '0.5em',
-                    marginBottom: '0.5em',
-                  },
-                  table: {
-                    fontSize: '9pt',
-                  },
-                  th: {
-                    padding: '0.25rem 0.5rem',
-                  },
-                  td: {
-                     padding: '0.25rem 0.5rem',
-                  }
-                }
-              }
-            }),
-             animation: {
+            fontFamily: {
+              'sans': ['Inter', 'system-ui', 'sans-serif'],
+            },
+            animation: {
               'fade-in-down': 'fadeInDown 0.5s ease-out forwards',
+              'slide-in': 'slideIn 0.3s ease-out forwards',
             },
             keyframes: {
               fadeInDown: {
                 '0%': { opacity: '0', transform: 'translateY(-20px)' },
                 '100%': { opacity: '1', transform: 'translateY(0)' },
               },
-               progressiveLoad: {
+              slideIn: {
+                '0%': { opacity: '0', transform: 'translateX(-20px)' },
+                '100%': { opacity: '1', transform: 'translateX(0)' },
+              },
+              progressiveLoad: {
                 '0%': { opacity: '0', transform: 'rotate(-30deg) scale(0)' },
                 '25%': { opacity: '1', transform: 'rotate(-30deg) scale(1)' },
                 '75%': { opacity: '1', transform: 'rotate(-30deg) scale(1)' },
@@ -99,6 +66,9 @@
     <script type="text/javascript" id="MathJax-script" async
       src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
     </script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style type="text/tailwindcss">
       @layer utilities {
         .print\:text-xxs {
@@ -124,14 +94,13 @@
         justify-content: center;
         width: 100%;
         min-height: 150px; 
-        background-color: #f8fafc; /* slate-50 */
-        border-radius: 0.375rem; /* rounded-md */
-        border: 1px solid #e2e8f0; /* slate-200 */
+        background-color: #f8fafc;
+        border-radius: 0.5rem;
+        border: 1px solid #e2e8f0;
         position: relative; 
       }
 
-      /* New Loading Animation CSS */
-      .loading-logo-container { /* For centering and text */
+      .loading-logo-container {
         display: flex;
         flex-direction: column;
         align-items: center;
@@ -142,7 +111,6 @@
           width: 120px;
           height: 120px;
           position: relative;
-          /* background: white; */ /* Removed for transparency with parent */
           overflow: hidden;
       }
 
@@ -161,7 +129,7 @@
           height: 14.93px;
           left: 25.19px;
           top: 34.83px;
-          background: #1A00FF;
+          background: #0ea5e9;
           animation-delay: 0s;
       }
 
@@ -170,7 +138,7 @@
           height: 14.93px;
           left: 26.20px;
           top: 56.59px;
-          background: #7393FE;
+          background: #38bdf8;
           animation-delay: 0.25s;
       }
 
@@ -179,7 +147,7 @@
           height: 14.93px;
           left: 25.70px;
           top: 80.50px;
-          background: #BAFFB1;
+          background: #34d399;
           animation-delay: 0.5s;
       }
 
@@ -188,7 +156,7 @@
           height: 14.93px;
           left: 65.24px;
           top: 80.47px;
-          background: #57FF7B;
+          background: #10b981;
           animation-delay: 0.75s;
       }
 
@@ -210,8 +178,21 @@
               transform: rotate(-30deg) scale(0);
           }
       }
-      /* End of New Loading Animation CSS */
 
+      /* Custom scrollbar */
+      .custom-scrollbar::-webkit-scrollbar {
+        width: 6px;
+      }
+      .custom-scrollbar::-webkit-scrollbar-track {
+        background: #f1f5f9;
+      }
+      .custom-scrollbar::-webkit-scrollbar-thumb {
+        background: #cbd5e1;
+        border-radius: 3px;
+      }
+      .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+        background: #94a3b8;
+      }
 
       @media print {
         body {
@@ -252,18 +233,16 @@
     "react/": "https://esm.sh/react@^19.1.0/",
     "react": "https://esm.sh/react@^19.1.0",
     "react-dom/": "https://esm.sh/react-dom@^19.1.0/",
-    "@google/genai": "https://esm.sh/@google/genai@^1.4.0",
     "jsxgraph": "https://esm.sh/jsxgraph@1.9.0"
   }
 }
 </script>
 <link rel="stylesheet" href="/index.css">
 </head>
-  <body class="bg-slate-100 text-slate-800 min-h-screen overflow-x-hidden">
+  <body class="bg-gray-50 text-gray-900 min-h-screen overflow-x-hidden font-sans">
     <div id="root">
-      <div style="display: flex; flex-direction: column; justify-content: center; align-items: center; height: 100vh; font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif; color: #1d4ed8; background-color: #f1f5f9;">
-        <!-- New Animated Loader for initial page load -->
-        <div class="loading-logo-container" style="transform: scale(0.6);">
+      <div style="display: flex; flex-direction: column; justify-content: center; align-items: center; height: 100vh; font-family: Inter, system-ui, sans-serif; color: #0ea5e9; background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);">
+        <div class="loading-logo-container" style="transform: scale(0.8);">
             <div class="loading-logo">
                 <div class="loading-bar"></div>
                 <div class="loading-bar"></div>
@@ -271,8 +250,8 @@
                 <div class="loading-bar"></div>
             </div>
         </div>
-        <p style="font-size: 1.5rem; font-weight: 600; color: #1e3a8a; margin-top: 0.5rem;">ASORBIT</p>
-        <p style="font-size: 1rem; color: #475569;">Loading Application...</p>
+        <p style="font-size: 2rem; font-weight: 700; color: #0ea5e9; margin-top: 1rem; letter-spacing: -0.025em;">ASORBIT</p>
+        <p style="font-size: 1rem; color: #64748b; margin-top: 0.5rem;">Loading Application...</p>
       </div>
     </div>
     

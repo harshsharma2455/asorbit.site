@@ -1,4 +1,3 @@
-
 import React, { useState, useCallback } from 'react';
 import { GeminiService } from '../services'; 
 import type { DiagramData, AppError } from '../types';
@@ -6,14 +5,6 @@ import { DiagramPromptInput } from '../components/features/QuestionInput';
 import { DiagramDisplay } from '../components/features/DiagramDisplay';
 import LoadingSpinner from '../components/core/LoadingSpinner'; 
 import { LightBulbIcon, ShapesIcon, API_KEY_ERROR_MESSAGE, RedoIcon } from '../config';
-
-// Remove EditIcon as it's no longer used
-// const EditIcon: React.FC<{ className?: string }> = ({ className = "w-5 h-5" }) => (
-//     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className={className}>
-//         <path d="M2.695 14.763l-1.262 3.154a.5.5 0 0 0 .65.65l3.155-1.262a4 4 0 0 0 1.343-.885L17.5 5.5a2.121 2.121 0 0 0-3-3L3.58 13.42a4 4 0 0 0-.885 1.343z" />
-//     </svg>
-// );
-
 
 interface DiagramGeneratorStandalonePageProps {
   geminiService: GeminiService;
@@ -25,7 +16,6 @@ const DiagramGeneratorStandalonePage: React.FC<DiagramGeneratorStandalonePagePro
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [error, setError] = useState<AppError | null>(null);
   const [currentPrompt, setCurrentPrompt] = useState<string>('');
-  // Removed isEditingDiagram state
 
   const handleGenerateDiagram = useCallback(async (prompt: string) => {
     setIsLoading(true);
@@ -33,7 +23,6 @@ const DiagramGeneratorStandalonePage: React.FC<DiagramGeneratorStandalonePagePro
     setDiagramData(null);
     setCurrentPrompt(prompt);
     setGlobalError(null);
-    // Removed setIsEditingDiagram(false);
 
     try {
       const data = await geminiService.generateDiagramDescription(prompt);
@@ -58,22 +47,20 @@ const DiagramGeneratorStandalonePage: React.FC<DiagramGeneratorStandalonePagePro
     }
   };
 
-  // Removed toggleEditMode, handleFinalizeEdits, handleCancelEdits
-
   return (
-    <div className="w-full max-w-3xl mx-auto space-y-8 p-4 sm:p-0">
-      <div className="text-center border-b border-slate-300 pb-6 mb-8">
-        <h1 className="text-3xl font-bold text-primary-700 flex items-center justify-center space-x-2">
+    <div className="max-w-5xl mx-auto space-y-8">
+      <div className="text-center border-b border-gray-200 pb-8">
+        <h1 className="text-4xl font-bold text-gray-900 flex items-center justify-center space-x-3 mb-4">
           <ShapesIcon /> 
           <span>AI Diagram Generator</span>
         </h1>
-        <p className="text-slate-600 mt-2">
-          Transform your textual descriptions into 2D diagrams for math and science concepts.
+        <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+          Transform your textual descriptions into 2D diagrams for math and science concepts with advanced AI technology.
         </p>
       </div>
 
-      {/* DiagramPromptInput is always visible now */}
-      <div className="p-6 bg-white shadow-xl rounded-lg border border-slate-200">
+      {/* Input Section */}
+      <div className="bg-white rounded-xl shadow-lg border border-gray-200 p-8">
         <DiagramPromptInput
           onSubmit={handleGenerateDiagram}
           isLoading={isLoading}
@@ -84,50 +71,70 @@ const DiagramGeneratorStandalonePage: React.FC<DiagramGeneratorStandalonePagePro
         />
       </div>
       
+      {/* Regenerate Button */}
       {(diagramData || error) && !isLoading && (
-         <div className="flex justify-center mt-4">
+         <div className="flex justify-center">
             <button
               onClick={handleRegenerate}
               disabled={isLoading || !currentPrompt}
-              className="px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white font-medium rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-400 transition-colors disabled:opacity-50 flex items-center space-x-2 text-sm"
+              className="px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg shadow-lg focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all disabled:opacity-50 flex items-center space-x-2"
             >
-              <RedoIcon className="w-4 h-4" />
+              <RedoIcon className="w-5 h-5" />
               <span>Regenerate Diagram</span>
             </button>
           </div>
       )}
 
+      {/* Loading State */}
       {isLoading && (
-        <div className="flex flex-col items-center justify-center p-10 bg-white shadow-lg rounded-lg border border-slate-200 min-h-[200px]">
+        <div className="bg-white rounded-xl shadow-lg border border-gray-200 p-12 text-center">
           <LoadingSpinner size="large" text="Generating Diagram..." />
-          <p className="text-sm text-slate-500 mt-2">The AI is working its magic. Please wait.</p>
+          <p className="text-gray-500 mt-4">The AI is working its magic. Please wait.</p>
         </div>
       )}
 
+      {/* Error State */}
       {error && !isLoading && (
-        <div className="p-4 bg-red-50 border-l-4 border-red-500 text-red-700 rounded-md shadow">
-          <h3 className="font-semibold text-lg mb-1">Generation Error</h3>
-          <p>{error.message}</p>
-          {error.details && <pre className="mt-2 text-xs bg-red-100 p-2 rounded overflow-x-auto">{error.details}</pre>}
+        <div className="bg-white rounded-xl shadow-lg border border-red-200 p-8">
+          <div className="flex items-start space-x-4">
+            <div className="flex-shrink-0">
+              <div className="w-10 h-10 bg-red-100 rounded-full flex items-center justify-center">
+                <svg className="w-6 h-6 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+              </div>
+            </div>
+            <div className="flex-1">
+              <h3 className="text-lg font-semibold text-red-800 mb-2">Generation Error</h3>
+              <p className="text-red-700">{error.message}</p>
+              {error.details && (
+                <details className="mt-3">
+                  <summary className="text-sm text-red-600 cursor-pointer hover:text-red-800">Show technical details</summary>
+                  <pre className="mt-2 text-xs bg-red-50 p-3 rounded border border-red-200 overflow-x-auto whitespace-pre-wrap text-red-700">{error.details}</pre>
+                </details>
+              )}
+            </div>
+          </div>
         </div>
       )}
 
+      {/* Diagram Display */}
       {diagramData && !isLoading && (
-        <div className="space-y-4">
+        <div className="space-y-6">
           <DiagramDisplay 
             data={diagramData} 
-            originalQuestion={currentPrompt} 
-            // Removed isEditing prop
+            originalQuestion={currentPrompt}
+            showDownloadButton={true}
           />
-          {/* Removed Edit Mode UI and Edit Diagram button */}
         </div>
       )}
       
+      {/* Empty State */}
       {!diagramData && !isLoading && !error && (
-         <div className="p-6 bg-slate-50 border-2 border-dashed border-slate-300 rounded-lg text-center min-h-[200px] flex flex-col justify-center items-center">
-            <LightBulbIcon className="w-12 h-12 text-primary-400 mb-3" />
-            <p className="text-slate-600 text-lg">Your generated diagram will appear here.</p>
-            <p className="text-slate-500 text-sm">Enter a prompt above and click "Generate Diagram".</p>
+         <div className="bg-white rounded-xl shadow-lg border-2 border-dashed border-gray-300 p-12 text-center">
+            <LightBulbIcon className="w-16 h-16 text-gray-400 mb-6 mx-auto" />
+            <h3 className="text-xl font-semibold text-gray-700 mb-2">Your generated diagram will appear here</h3>
+            <p className="text-gray-500">Enter a prompt above and click "Generate Diagram" to get started.</p>
         </div>
       )}
     </div>

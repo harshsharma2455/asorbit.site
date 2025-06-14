@@ -96,7 +96,7 @@ const renderElementSVG = (element: DiagramElement, index: number): React.ReactNo
 };
 
 
-export const DiagramDisplay: React.FC<DiagramDisplayProps> = ({ data, originalQuestion }) => {
+export const DiagramDisplay: React.FC<{ data: DiagramData; originalQuestion: string; }> = ({ data, originalQuestion }) => {
   const defaultViewBoxSVG = "0 0 300 200";
   const jsxGraphBoardRef = useRef<JXG.Board | null>(null);
   const jsxGraphContainerId = useId() + '-jsxgraph-board'; 
@@ -164,6 +164,7 @@ export const DiagramDisplay: React.FC<DiagramDisplayProps> = ({ data, originalQu
           pan: {enabled: true, needShift: false},
           zoom: {factorX: 1.25, factorY: 1.25, wheel: true, needShift: false},
           grid: false, 
+          renderer: 'svg', // Explicitly set renderer for reliability
           defaultAxes: { 
             x: { 
               strokeColor: '#94a3b8', 
@@ -182,7 +183,6 @@ export const DiagramDisplay: React.FC<DiagramDisplayProps> = ({ data, originalQu
         
         if (board) {
             jsxGraphBoardRef.current = board; 
-            // Set text display mode to internal for better SVG export compatibility
             if (board.options && board.options.text) {
               (board.options.text as any).display = 'internal';
             }
@@ -232,6 +232,7 @@ export const DiagramDisplay: React.FC<DiagramDisplayProps> = ({ data, originalQu
                   useMathJax: elDef.label?.useMathJax ?? false,
                   cssClass: 'text-slate-700 jsxgraph-label', 
                   highlightCssClass: 'text-primary-600 jsxgraph-label-highlight',
+                  display: 'internal', // Ensure labels are also SVG for export
                },
               highlightStrokeColor: elDef.highlightStrokeColor || '#60a5fa', 
               highlightFillColor: elDef.highlightFillColor || '#34d399',   
@@ -485,45 +486,187 @@ export const DiagramDisplay: React.FC<DiagramDisplayProps> = ({ data, originalQu
     }
   };
 
-  const handleDownloadSVG = () => {
-    if (!jsxGraphBoardRef.current || !isBoardReady || data.representationType !== 'geometry') {
-      setJsxError("SVG Download Error: Board not ready or not a geometric diagram.");
+  const processSvgStringForDownload = (svgString: string, board: JXG.Board, targetWidth: number = 800): {processedString: string, width: number, height: number} => {
+    try {
+        if (!svgString || svgString.trim() === "" || !svgString.includes("<svg")) {
+            console.error("Input SVG string is empty or invalid for processing.");
+            throw new Error("Input SVG string is empty or invalid for download processing.");
+        }
+
+        const parser = new DOMParser();
+        const doc = parser.parseFromString(svgString, "image/svg+xml");
+        const svgNode = doc.documentElement;
+
+        if (svgNode.nodeName.toLowerCase() !== 'svg' || doc.getElementsByTagName("parsererror").length > 0) {
+            console.error("Parsed SVG string is not a valid SVG document for download processing.", svgString);
+            throw new Error("Invalid SVG content after parsing for download.");
+        }
+
+        svgNode.querySelectorAll('defs filter').forEach(filter => filter.remove());
+        svgNode.querySelectorAll('[clip-path]').forEach(el => el.removeAttribute('clip-path'));
+
+
+        let finalViewBoxStr: string;
+        let finalAspectRatio: number;
+        const defaultVBoxWidth = 600;
+        const defaultVBoxHeight = 450;
+
+        const boardCanvasWidth = board.canvasWidth;
+        const boardCanvasHeight = board.canvasHeight;
+
+        if (boardCanvasWidth > 0 && boardCanvasHeight > 0) {
+            finalViewBoxStr = `0 0 ${boardCanvasWidth} ${boardCanvasHeight}`;
+            finalAspectRatio = boardCanvasWidth / boardCanvasHeight;
+        } else {
+            const boardBox = board.getBoundingBox(); 
+            const bbWidth = boardBox[2] - boardBox[0];
+            const bbHeight = boardBox[1] - boardBox[3];
+            if (isFinite(bbWidth) && isFinite(bbHeight) && bbWidth > 1e-6 && bbHeight > 1e-6) {
+                finalViewBoxStr = `${boardBox[0]} ${boardBox[3]} ${bbWidth} ${bbHeight}`; 
+                finalAspectRatio = bbWidth / bbHeight;
+                console.warn("[SVG Process] Using board.getBoundingBox() for viewBox as fallback because canvas dimensions were invalid:", finalViewBoxStr);
+            } else {
+                finalViewBoxStr = `0 0 ${defaultVBoxWidth} ${defaultVBoxHeight}`;
+                finalAspectRatio = defaultVBoxWidth / defaultVBoxHeight;
+                console.error("[SVG Process] Critical: Could not determine valid viewBox from canvas or getBoundingBox. Using default:", finalViewBoxStr);
+            }
+        }
+
+        const displayWidth = targetWidth;
+        const displayHeight = Math.round(displayWidth / (finalAspectRatio || (defaultVBoxWidth / defaultVBoxHeight)));
+
+        svgNode.setAttribute('width', displayWidth.toString() + 'px');
+        svgNode.setAttribute('height', displayHeight.toString() + 'px');
+        svgNode.setAttribute('viewBox', finalViewBoxStr);
+        
+        if (!svgNode.hasAttribute('preserveAspectRatio')) {
+            svgNode.setAttribute('preserveAspectRatio', 'xMidYMid meet');
+        }
+        if (!svgNode.hasAttribute('xmlns')) {
+            svgNode.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
+        }
+        if (!svgNode.hasAttribute('xmlns:xlink')) {
+            svgNode.setAttribute('xmlns:xlink', 'http://www.w3.org/1999/xlink');
+        }
+
+        const serializer = new XMLSerializer();
+        let finalSvgString = serializer.serializeToString(svgNode);
+        
+        if (!finalSvgString.startsWith('<?xml')) {
+            finalSvgString = '<?xml version="1.0" encoding="UTF-8" standalone="no"?>\n' + finalSvgString;
+        }
+        return {processedString: finalSvgString, width: displayWidth, height: displayHeight};
+
+    } catch (e) {
+        console.error("[DiagramDisplay SVG Process] Error processing SVG string for download:", e, "Original SVG:", svgString);
+        if (svgString && svgString.includes("<svg")) {
+           const errorComment = `<!-- SVG Processing Error: ${(e instanceof Error ? e.message : String(e))} -->\n`;
+            return {processedString: errorComment + svgString, width: targetWidth, height: Math.round(targetWidth * 0.75)}; // Fallback dimensions
+        }
+        throw new Error(`SVG processing failed critically: ${e instanceof Error ? e.message : String(e)}`);
+    }
+  };
+
+  const handleDownloadPNG = async () => {
+    if (!jsxGraphBoardRef.current || !isBoardReady) {
+      setJsxError("PNG Download Error: Board not available or ready.");
       return;
     }
+    if (data.representationType !== 'geometry' || !data.geometricElements || data.geometricElements.length === 0) {
+      setJsxError("PNG Download Error: No geometric data to download.");
+      return;
+    }
+    
+    const board = jsxGraphBoardRef.current;
+    if (!board.renderer || (board.renderer as any).type !== 'svg') {
+        setJsxError("PNG Download Error: Board renderer is not set to SVG.");
+        return;
+    }
 
-    const boardInstance = jsxGraphBoardRef.current as any;
-    let svgString: string | undefined;
+    setJsxError(null); 
+    let rawSvgString: string | undefined;
     let exportMethodUsed = "";
 
     try {
-      if (typeof boardInstance.toSVG === 'function') {
-        svgString = boardInstance.toSVG();
-        exportMethodUsed = "board.toSVG()";
-      } else if (boardInstance.renderer && typeof boardInstance.renderer.dumpToSVG === 'function') {
-        svgString = boardInstance.renderer.dumpToSVG();
-        exportMethodUsed = "board.renderer.dumpToSVG()";
-      } else {
-        throw new Error("Suitable SVG export method (toSVG or renderer.dumpToSVG) not found on board instance.");
-      }
+        const container = document.getElementById(jsxGraphContainerId);
+        if (container && container.clientWidth > 0 && container.clientHeight > 0) {
+            board.resizeContainer(container.clientWidth, container.clientHeight, false, true);
+            board.fullUpdate();
+        } else {
+             console.warn("[DiagramDisplay Download PNG] Board container has no dimensions. SVG export for PNG might be incorrect.");
+        }
+        
+        await new Promise(resolve => setTimeout(resolve, 150));
 
-      if (!svgString || typeof svgString !== 'string' || !svgString.includes('<svg')) {
-        throw new Error(`Method ${exportMethodUsed} returned empty or invalid SVG string.`);
-      }
+        if (!(board.canvasWidth > 0 && board.canvasHeight > 0)) {
+            console.warn(`[DiagramDisplay Download PNG] Board canvas dimensions are invalid (W:${board.canvasWidth}, H:${board.canvasHeight}) even after resize attempt. PNG viewBox might be incorrect.`);
+        }
 
-      const blob = new Blob([svgString], { type: 'image/svg+xml;charset=utf-8' });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = `${(data.diagramTitle || 'diagram').replace(/[^a-z0-9_.-]/gi, '_')}.svg`;
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-      URL.revokeObjectURL(url);
-      setJsxError(null); // Clear previous errors on success
+        if (board.renderer && typeof (board.renderer as any).dumpToSVG === 'function') {
+            rawSvgString = (board.renderer as any).dumpToSVG();
+            exportMethodUsed = "board.renderer.dumpToSVG()";
+        }
+        if ((!rawSvgString || !rawSvgString.includes('<svg')) && typeof (board as any).toSVG === 'function') {
+            rawSvgString = (board as any).toSVG();
+            exportMethodUsed = "board.toSVG()";
+        }
+        if (!rawSvgString || !rawSvgString.includes('<svg') && container) {
+            const svgElement = container?.querySelector('svg');
+            if (svgElement) {
+                rawSvgString = new XMLSerializer().serializeToString(svgElement);
+                exportMethodUsed = "DOM XMLSerializer";
+            }
+        }
+        
+        if (!rawSvgString || !rawSvgString.includes('<svg')) {
+            throw new Error(`Failed to obtain valid SVG string using methods: ${exportMethodUsed || 'all attempted methods'}. Content was empty or invalid.`);
+        }
+        
+        const { processedString: processedSvgString, width: svgEffectiveWidth, height: svgEffectiveHeight } = processSvgStringForDownload(rawSvgString, board, 800); // Target 800px width for SVG intermediary
+
+        const img = new Image();
+        await new Promise<void>((resolve, reject) => {
+            img.onload = () => resolve();
+            img.onerror = (errEvt) => {
+                console.error("Error loading SVG into Image for PNG conversion:", errEvt);
+                let specificError = "Unknown error";
+                if (typeof errEvt === 'string') specificError = errEvt;
+                else if (errEvt instanceof Event && errEvt.target) {
+                   // Cannot get more specific error from generic Event for img.onerror
+                   specificError = "SVG data malformed or security issue.";
+                }
+                reject(new Error(`Failed to load SVG data into an image for PNG conversion. ${specificError}`));
+            };
+            img.src = `data:image/svg+xml;charset=utf-8,${encodeURIComponent(processedSvgString)}`;
+        });
+
+        const canvas = document.createElement('canvas');
+        canvas.width = svgEffectiveWidth; 
+        canvas.height = svgEffectiveHeight; 
+        
+        const ctx = canvas.getContext('2d');
+        if (!ctx) {
+            throw new Error("Could not get 2D context from canvas for PNG conversion.");
+        }
+
+        // Optional: Fill background if SVG is transparent and white BG is desired for PNG
+        // ctx.fillStyle = 'white';
+        // ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+        ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+        
+        const pngUrl = canvas.toDataURL('image/png');
+        const a = document.createElement('a');
+        a.href = pngUrl;
+        a.download = `${(data.diagramTitle || 'diagram').replace(/[^a-z0-9_.-]/gi, '_')}.png`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+
     } catch (error) {
-      console.error("Error downloading SVG:", error);
-      const message = error instanceof Error ? error.message : "An unknown error occurred during SVG export.";
-      setJsxError(`Failed to download SVG: ${message}`);
+        console.error("[DiagramDisplay Download PNG] Error during PNG download:", error);
+        const message = error instanceof Error ? error.message : "An unknown error occurred.";
+        setJsxError(`PNG Download Failed: ${message} (Method for SVG source: ${exportMethodUsed || 'N/A'})`);
     }
   };
 
@@ -540,15 +683,15 @@ export const DiagramDisplay: React.FC<DiagramDisplayProps> = ({ data, originalQu
         </div>
         {data.representationType === 'geometry' && data.geometricElements && data.geometricElements.length > 0 && isBoardReady && (
             <button
-                onClick={handleDownloadSVG}
+                onClick={handleDownloadPNG} // Changed from handleDownloadSVG
                 className="px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-medium rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-offset-1 focus:ring-primary-400 transition-colors flex items-center space-x-1.5"
-                title="Download Diagram as SVG"
+                title="Download Diagram as PNG"
             >
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="w-4 h-4">
                     <path d="M10.75 2.75a.75.75 0 0 0-1.5 0v8.614L6.295 8.235a.75.75 0 1 0-1.09 1.03l4.25 4.5a.75.75 0 0 0 1.09 0l4.25-4.5a.75.75 0 0 0-1.09-1.03l-2.955 3.129V2.75Z" />
                     <path d="M3.5 12.75a.75.75 0 0 0-1.5 0v2.5A2.75 2.75 0 0 0 4.75 18h10.5A2.75 2.75 0 0 0 18 15.25v-2.5a.75.75 0 0 0-1.5 0v2.5c0 .69-.56 1.25-1.25 1.25H4.75c-.69 0-1.25-.56-1.25-1.25v-2.5Z" />
                 </svg>
-                <span>Download SVG</span>
+                <span>Download PNG</span>
             </button>
         )}
       </div>
@@ -617,8 +760,3 @@ export const DiagramDisplay: React.FC<DiagramDisplayProps> = ({ data, originalQu
     </div>
   );
 };
-
-interface DiagramDisplayProps {
-  data: DiagramData;
-  originalQuestion: string;
-}

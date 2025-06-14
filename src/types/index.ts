@@ -1,5 +1,3 @@
-
-
 import JXG from 'jsxgraph'; // Added import
 
 // Allow JSXGraph to be used from window if not using direct imports with types
@@ -272,4 +270,10 @@ export interface SyllabusChapterDetail {
   // Kept for backward compatibility or general guidance if exercises don't cover all
   includedTopics?: string[];
   deletedTopics?: string[]; // General deleted topics (redundant if exercise.isRemovedCBSE is comprehensive)
+}
+
+export interface DiagramDisplayProps {
+  data: DiagramData;
+  originalQuestion: string;
+  showDownloadButton?: boolean;
 }

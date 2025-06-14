@@ -47,7 +47,7 @@ const PaperGeneratorPage: React.FC<PaperGeneratorPageProps> = ({ geminiService, 
   const handleConfigurationSubmit = useCallback(async (config: PaperConfiguration) => {
     setPaperConfig(config);
     setIsLoadingTextGeneration(true);
-    setIsLoadingInitialDiagrams(false); // Reset this
+    setIsLoadingInitialDiagrams(false);
     setLocalError(null); 
     setGlobalError(null); 
     setDraftQuestions([]); 
@@ -88,21 +88,18 @@ const PaperGeneratorPage: React.FC<PaperGeneratorPageProps> = ({ geminiService, 
       } else {
         setLocalError("An unknown error occurred while generating the draft question paper text.");
       }
-      // Keep any potentially partially loaded questions if error occurs after some are set.
-      // If initialQuestions is empty, it means error was before any questions were formed.
       setDraftQuestions(prev => prev.length > 0 ? prev : initialQuestions); 
     } finally {
       setIsLoadingTextGeneration(false); 
     }
 
-    // After text is loaded and view is draft, start fetching initial diagrams
     if (initialQuestions.length > 0 && initialQuestions.some(q => q.isDiagramRecommended && q.isLoadingDiagram)) {
         setIsLoadingInitialDiagrams(true);
-        const questionsToProcessForDiagrams = [...initialQuestions]; // Operate on a snapshot
+        const questionsToProcessForDiagrams = [...initialQuestions];
 
         for (let i = 0; i < questionsToProcessForDiagrams.length; i++) {
             let question = questionsToProcessForDiagrams[i];
-            if (question.isDiagramRecommended && question.isLoadingDiagram) { // Ensure isLoadingDiagram is true
+            if (question.isDiagramRecommended && question.isLoadingDiagram) {
                 try {
                     const diagramData = await geminiService.generateDiagramDescription(question.diagramOriginalQuestionPrompt);
                     setDraftQuestions(prevQs => prevQs.map(q => 
@@ -749,30 +746,31 @@ const PaperGeneratorPage: React.FC<PaperGeneratorPageProps> = ({ geminiService, 
 
   if (localError && !globalError) { 
     return (
-      <div className="min-h-screen flex flex-col items-center justify-center p-4 md:p-8 bg-yellow-50 text-yellow-700" role="alert">
-        <LightBulbIcon className="w-16 h-16 text-yellow-400 mb-4" />
-        <h1 className="text-3xl font-bold mb-4">Application Notice</h1>
-        <p className="text-lg">{localError}</p>
-        <button 
-            onClick={() => { setLocalError(null); handleBackToConfig(); }} 
-            className="mt-6 px-4 py-2 bg-yellow-500 hover:bg-yellow-600 text-white font-semibold rounded-md transition-colors"
-        >
-            Go Back to Configuration
-        </button>
+      <div className="flex flex-col items-center justify-center p-8 bg-yellow-50 rounded-xl border border-yellow-200" role="alert">
+        <div className="bg-white rounded-xl shadow-lg p-8 max-w-md w-full text-center border border-gray-200">
+          <LightBulbIcon className="w-16 h-16 text-yellow-500 mb-6 mx-auto" />
+          <h1 className="text-2xl font-bold text-gray-900 mb-4">Application Notice</h1>
+          <p className="text-gray-600 mb-6">{localError}</p>
+          <button 
+              onClick={() => { setLocalError(null); handleBackToConfig(); }} 
+              className="w-full px-6 py-3 bg-yellow-600 hover:bg-yellow-700 text-white font-semibold rounded-lg transition-colors"
+          >
+              Go Back to Configuration
+          </button>
+        </div>
       </div>
     );
   }
 
-  // Centering PaperGeneratorPage by adding mx-auto
   return (
-    <div className="w-full max-w-4xl mx-auto flex flex-col space-y-8">
+    <div className="max-w-6xl mx-auto">
       {(isLoadingTextGeneration || isFinalizingPaper) && (currentView === 'config' || currentView === 'draft') && (
-           <div className="w-full flex flex-col items-center justify-center p-10 bg-white shadow-xl rounded-lg border border-slate-200 min-h-[400px]">
+           <div className="bg-white rounded-xl shadow-lg p-12 text-center border border-gray-200">
               <LoadingSpinner 
                 size="large"
                 text={isLoadingTextGeneration ? "Generating your draft question paper text..." : "Finalizing your question paper..."}
               />
-              <p className="text-slate-500 mt-2 text-center">
+              <p className="text-gray-500 mt-4 text-center">
                   {isLoadingTextGeneration ? "The AI is crafting questions." : "Converting diagrams to static images."} This may take some time.
               </p>
           </div>
@@ -802,14 +800,12 @@ const PaperGeneratorPage: React.FC<PaperGeneratorPageProps> = ({ geminiService, 
         />
       )}
       
-      {/* Draft view also needs a loading state if finalizing has started from it */}
       {currentView === 'draft' && isFinalizingPaper && (
-         <div className="w-full flex flex-col items-center justify-center p-10 bg-white shadow-xl rounded-lg border border-slate-200 min-h-[400px]">
+         <div className="bg-white rounded-xl shadow-lg p-12 text-center border border-gray-200">
             <LoadingSpinner size="large" text="Finalizing your question paper..." />
-            <p className="text-slate-500 mt-2 text-center">Converting diagrams to static images. This may take some time.</p>
+            <p className="text-gray-500 mt-4 text-center">Converting diagrams to static images. This may take some time.</p>
         </div>
       )}
-
 
       {currentView === 'final' && paperConfig && ( 
           <FinalQuestionPaperView

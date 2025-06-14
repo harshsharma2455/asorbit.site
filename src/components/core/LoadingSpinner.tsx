@@ -14,7 +14,7 @@ const LoadingSpinner: React.FC<LoadingSpinnerProps> = ({ text, size = 'medium' }
     <div className="loading-logo-container">
       <div 
         className="loading-logo" 
-        style={size !== 'medium' ? { transform: `scale(${scale})`, width: `${120*scale}px`, height: `${120*scale}px` } : {}}
+        style={size !== 'medium' ? { transform: `scale(${scale})`} : {}}
       >
         <div className="loading-bar"></div>
         <div className="loading-bar"></div>
