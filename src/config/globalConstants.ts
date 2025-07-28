@@ -2,7 +2,7 @@ import React from 'react';
 import type { QuestionTypeConfig }  from '../types';
 
 export const API_KEY_ERROR_MESSAGE = "API key not configured. Please set the process.env.API_KEY environment variable.";
-export const GEMINI_MODEL_TEXT = "gemini-2.5-flash-preview-04-17";
+export const GEMINI_MODEL_TEXT = "gemini-2.5-flash";
 
 export const InfoIcon: React.ReactElement<React.SVGProps<SVGSVGElement>> = React.createElement(
   "svg",
