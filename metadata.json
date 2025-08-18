@@ -1,6 +1,5 @@
 {
-  "name": "deploy 2",
-  "description": "deployable \n",
-  "requestFramePermissions": [],
-  "prompt": ""
+  "name": "Asorbit AI Automations",
+  "description": "A visually stunning and interactive landing page for Asorbit, a company providing AI automation solutions for businesses. Features 3D and parallax effects for a professional, high-end user experience.",
+  "requestFramePermissions": []
 }
