@@ -37,7 +37,8 @@ const Chatbot: React.FC = () => {
     const [sessionId, setSessionId] = useState('');
     const messagesEndRef = useRef<HTMLDivElement>(null);
 
-    const N8N_WEBHOOK_URL = 'https://n8n.asorbit.site/webhook/2a57d7ef-25e3-4b95-aec6-a9df9c91a8d7/chat';
+    const N8N_WEBHOOK_URL = '/.netlify/functions/proxyWebhookChat';
+
 
     useEffect(() => {
         // Generate a unique session ID for the chat session
