@@ -687,41 +687,58 @@ const ContactPage: React.FC = () => {
     return (
         <div key="contact" className="animate-fadeInUp pt-28 sm:pt-32 pb-16">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div className="flex flex-col md:flex-row gap-12 md:gap-16 items-start">
-                    <div className="w-full md:w-1/2">
-                        <Calendar 
-                            selectedDate={selectedDate}
-                            onDateSelect={setSelectedDate}
-                            selectedTime={selectedTime}
-                            onTimeSelect={handleTimeSelect}
-                            timeError={errors.time}
-                        />
-                        <div className="mt-8 bg-indigo-50 border-l-4 border-indigo-300 p-5 rounded-r-lg shadow-[var(--shadow-custom)]">
-                            <div className="flex items-start gap-4">
-                                <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8 text-indigo-400 flex-shrink-0 mt-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 18v-5.25m0 0a6.01 6.01 0 001.5-.189m-1.5.189a6.01 6.01 0 01-1.5-.189m3.75 7.478a12.06 12.06 0 01-4.5 0m3.75 2.311a7.5 7.5 0 01-7.5 0c-1.42 0-2.67-.34-3.75-.934m15.002 0c-1.08.594-2.33.934-3.75.934a7.5 7.5 0 01-7.5 0" />
-                                </svg>
-                                <div>
-                                    <h4 className="text-lg font-bold text-slate-800">Did you know?</h4>
-                                    <p className="mt-1 text-slate-600 transition-opacity duration-500">
-                                        <span className="font-bold text-indigo-600">“</span>
-                                        {factWithoutPrefix}
-                                        <span className="font-bold text-indigo-600">”</span>
-                                    </p>
+                <div className="bg-indigo-50 border-l-4 border-indigo-400 text-indigo-900 p-6 rounded-r-lg mb-12 shadow-lg flex items-start">
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-7 w-7 flex-shrink-0 mr-4 text-indigo-500 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                    <div>
+                        <h3 className="text-xl font-bold">Service Under Construction</h3>
+                        <p className="mt-1 text-indigo-800">
+                            We are currently working on this service. For urgent inquiries, please email me directly at{' '}
+                            <a href="mailto:Harsh@asorbit.site" className="font-semibold text-indigo-600 underline hover:text-indigo-500 transition-colors">
+                                Harsh@asorbit.site
+                            </a>.
+                        </p>
+                    </div>
+                </div>
+
+                <div className="relative filter grayscale pointer-events-none opacity-60">
+                    <div className="flex flex-col md:flex-row gap-12 md:gap-16 items-start">
+                        <div className="w-full md:w-1/2">
+                            <Calendar 
+                                selectedDate={selectedDate}
+                                onDateSelect={setSelectedDate}
+                                selectedTime={selectedTime}
+                                onTimeSelect={handleTimeSelect}
+                                timeError={errors.time}
+                            />
+                            <div className="mt-8 bg-indigo-50 border-l-4 border-indigo-300 p-5 rounded-r-lg shadow-[var(--shadow-custom)]">
+                                <div className="flex items-start gap-4">
+                                    <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8 text-indigo-400 flex-shrink-0 mt-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 18v-5.25m0 0a6.01 6.01 0 001.5-.189m-1.5.189a6.01 6.01 0 01-1.5-.189m3.75 7.478a12.06 12.06 0 01-4.5 0m3.75 2.311a7.5 7.5 0 01-7.5 0c-1.42 0-2.67-.34-3.75-.934m15.002 0c-1.08.594-2.33.934-3.75.934a7.5 7.5 0 01-7.5 0" />
+                                    </svg>
+                                    <div>
+                                        <h4 className="text-lg font-bold text-slate-800">Did you know?</h4>
+                                        <p className="mt-1 text-slate-600 transition-opacity duration-500">
+                                            <span className="font-bold text-indigo-600">“</span>
+                                            {factWithoutPrefix}
+                                            <span className="font-bold text-indigo-600">”</span>
+                                        </p>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                    <div className="w-full md:w-1/2">
-                        <ContactForm 
-                            formData={formData} 
-                            errors={errors} 
-                            onInputChange={handleInputChange} 
-                            onSubmit={handleSubmit}
-                            isLoading={isLoading}
-                            submitError={submitError}
-                            availableTimezones={availableTimezones}
-                        />
+                        <div className="w-full md:w-1/2">
+                            <ContactForm 
+                                formData={formData} 
+                                errors={errors} 
+                                onInputChange={handleInputChange} 
+                                onSubmit={handleSubmit}
+                                isLoading={isLoading}
+                                submitError={submitError}
+                                availableTimezones={availableTimezones}
+                            />
+                        </div>
                     </div>
                 </div>
             </div>

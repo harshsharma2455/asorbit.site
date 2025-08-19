@@ -13,7 +13,6 @@ const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
                     <div className="flex justify-center space-x-6 md:order-2">
                         <button onClick={() => onNavigate('features')} className="text-slate-500 hover:text-slate-900">Features</button>
                         <button onClick={() => onNavigate('process')} className="text-slate-500 hover:text-slate-900">Process</button>
-                        <button onClick={() => onNavigate('projectsPage')} className="text-slate-500 hover:text-slate-900">Projects</button>
                         <button onClick={() => onNavigate('contact')} className="text-slate-500 hover:text-slate-900">Contact</button>
                     </div>
                     <p className="mt-8 text-base text-slate-500 md:mt-0 md:order-1">
