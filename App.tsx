@@ -72,7 +72,7 @@ const App: React.FC = () => {
     return (
         <>
             <div className="bg-[var(--bg-primary)] text-slate-800 flex-grow" style={{ perspective: '1000px' }}>
-                <div className="fixed top-0 left-0 w-full h-full z-0 pointer-events-none">
+                <div className="fixed top-0 left-0 w-full h-full z-0 pointer-events-none overflow-x-hidden">
                     <div 
                         className="absolute top-0 left-0 w-full h-[200vh] bg-gradient-to-b from-indigo-100/10 via-transparent to-transparent"
                         style={{ transform: `translateY(-${scrollY * 0.2}px)` }}
