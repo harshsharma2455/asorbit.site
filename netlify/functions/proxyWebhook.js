@@ -1,15 +1,16 @@
 export async function handler(event, context) {
-  const chatUrl = process.env.CHAT_SERVICE_URL;
+  const webhookUrl = process.env.N8N_WEBHOOK_URL;
 
-  if (!chatUrl) {
+  if (!webhookUrl) {
     return {
       statusCode: 500,
-      body: JSON.stringify({ error: 'Chat service URL is not defined' }),
+      body: JSON.stringify({ error: 'Webhook URL is not defined' }),
     };
   }
 
   try {
-    const response = await fetch(chatUrl, {
+    // Forward the exact payload from the React app
+    const response = await fetch(webhookUrl, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: event.body,
