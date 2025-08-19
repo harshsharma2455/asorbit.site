@@ -627,13 +627,14 @@ const ContactPage: React.FC = () => {
             appointmentTime: selectedTime || '',
           };
     
-          const webhookUrl = 'https://n8n.asorbit.site/webhook/asorbit';
-    
-          const response = await fetch(webhookUrl, {
+          const proxyUrl = '/.netlify/functions/proxyWebhook';
+
+          const response = await fetch(proxyUrl, {
             method: 'POST',
-            headers: { 'Content-Type': 'text/plain' },
+            headers: { 'Content-Type': 'application/json' }, // use 'application/json'
             body: JSON.stringify(submissionData),
-          });
+            });
+
     
           const resultText = await response.text();
           console.log("Webhook raw response:", response.status, resultText);

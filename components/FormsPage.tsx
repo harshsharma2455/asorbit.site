@@ -121,13 +121,14 @@ const ResourcesPage: React.FC = () => {
         if (validate()) {
             setIsLoading(true);
             try {
-                const webhookUrl = 'https://n8n.asorbit.site/webhook/asorbit';
-    
-                const response = await fetch(webhookUrl, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'text/plain' },
-                    body: JSON.stringify(formData),
-                });
+               const proxyUrl = '/.netlify/functions/proxyWebhook';
+
+               const response = await fetch(proxyUrl, {
+                   method: 'POST',
+                   headers: { 'Content-Type': 'application/json' },
+                   body: JSON.stringify(formData),
+               });
+
     
                 if (!response.ok) {
                     throw new Error(`Webhook submission failed with status: ${response.status}`);
