@@ -69,11 +69,8 @@ const Header: React.FC = () => {
 
           {/* Desktop CTA */}
           <div className="hidden md:block">
-            <Link
-              to="/resources"
-              className="bg-indigo-600 text-white px-5 py-2.5 rounded-lg text-sm font-semibold hover:bg-indigo-700 transition-all duration-300 transform hover:scale-105 shadow-[var(--shadow-custom)]"
-            >
-              Resources
+            <Link to="/contact" className="bg-indigo-600 text-white px-5 py-2.5 rounded-lg text-sm font-semibold hover:bg-indigo-700 transition-all duration-300 transform hover:scale-105 shadow-[var(--shadow-custom)]">
+              Contact
             </Link>
           </div>
 
@@ -137,7 +134,10 @@ const Header: React.FC = () => {
         </div>
         <div className="pt-4 pb-3 border-t border-slate-200">
           <div className="px-2">
-            <Link to="/contact" className="bg-indigo-600 text-white px-5 py-2.5 rounded-lg text-sm font-semibold    hover:bg-indigo-700 transition-all duration-300 transform hover:scale-105 shadow-[var(--shadow-custom)]">
+            <Link
+            to="/contact"
+            onClick={() => setIsMenuOpen(false)}
+            className="w-full bg-indigo-600 text-white block px-5 py-3 rounded-lg text-base font-semibold hover:bg-indigo-700 transition-all duration-300">
               Contact
             </Link>
           </div>
