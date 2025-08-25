@@ -108,8 +108,8 @@ const App: React.FC = () => {
           <main className="flex-grow">
             <Routes>
               <Route path="/" element={<HomePage />} />
-              <Route path="/contact" element={<ContactPage />} />
-              <Route path="/contact-v2" element={<ContactPageV2 />} />
+              <Route path="/contact" element={<ContactPageV2 />} />
+              <Route path="/contact-v2" element={<ContactPage />} />
               <Route path="/resources" element={<ResourcesPage />} />
               {/* fallback → send unknown paths to home */}
               <Route path="*" element={<HomePage />} />
