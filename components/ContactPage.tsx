@@ -236,6 +236,131 @@ const countryTimezones: { [key: string]: string[] } = {
     "Zimbabwe": ["(GMT+02:00) Africa/Harare"]
 };
 
+// --- AUTO-DETECTION: Timezone to Country mapping ---
+const timezoneToCountry: { [key: string]: string } = {
+    // Americas
+    "America/New_York": "United States",
+    "America/Chicago": "United States", 
+    "America/Denver": "United States",
+    "America/Los_Angeles": "United States",
+    "America/Anchorage": "United States",
+    "America/Detroit": "United States",
+    "America/Phoenix": "United States",
+    "Pacific/Honolulu": "United States",
+    "America/Toronto": "Canada",
+    "America/Vancouver": "Canada",
+    "America/Montreal": "Canada",
+    "America/Halifax": "Canada",
+    "America/Mexico_City": "Mexico",
+    "America/Sao_Paulo": "Brazil",
+    "America/Buenos_Aires": "Argentina",
+    "America/Lima": "Peru",
+    "America/Bogota": "Colombia",
+    "America/Santiago": "Chile",
+    
+    // Europe
+    "Europe/London": "United Kingdom",
+    "Europe/Berlin": "Germany",
+    "Europe/Paris": "France",
+    "Europe/Rome": "Italy",
+    "Europe/Madrid": "Spain",
+    "Europe/Amsterdam": "Netherlands",
+    "Europe/Brussels": "Belgium",
+    "Europe/Vienna": "Austria",
+    "Europe/Stockholm": "Sweden",
+    "Europe/Copenhagen": "Denmark",
+    "Europe/Oslo": "Norway",
+    "Europe/Helsinki": "Finland",
+    "Europe/Warsaw": "Poland",
+    "Europe/Prague": "Czech Republic",
+    "Europe/Budapest": "Hungary",
+    "Europe/Bucharest": "Romania",
+    "Europe/Athens": "Greece",
+    "Europe/Istanbul": "Turkey",
+    "Europe/Moscow": "Russia",
+    "Europe/Kiev": "Ukraine",
+    "Europe/Zurich": "Switzerland",
+    "Europe/Dublin": "Ireland",
+    "Europe/Lisbon": "Portugal",
+    
+    // Asia
+    "Asia/Tokyo": "Japan",
+    "Asia/Shanghai": "China",
+    "Asia/Seoul": "South Korea",
+    "Asia/Singapore": "Singapore",
+    "Asia/Hong_Kong": "China",
+    "Asia/Bangkok": "Thailand",
+    "Asia/Manila": "Philippines",
+    "Asia/Jakarta": "Indonesia",
+    "Asia/Kuala_Lumpur": "Malaysia",
+    "Asia/Ho_Chi_Minh": "Vietnam",
+    "Asia/Kolkata": "India",
+    "Asia/Mumbai": "India",
+    "Asia/Dubai": "United Arab Emirates",
+    "Asia/Tehran": "Iran",
+    "Asia/Baghdad": "Iraq",
+    "Asia/Jerusalem": "Israel",
+    "Asia/Riyadh": "Saudi Arabia",
+    "Asia/Kuwait": "Kuwait",
+    "Asia/Qatar": "Qatar",
+    "Asia/Karachi": "Pakistan",
+    "Asia/Dhaka": "Bangladesh",
+    "Asia/Kabul": "Afghanistan",
+    "Asia/Tashkent": "Uzbekistan",
+    "Asia/Almaty": "Kazakhstan",
+    "Asia/Yerevan": "Armenia",
+    "Asia/Baku": "Azerbaijan",
+    "Asia/Tbilisi": "Georgia",
+    
+    // Africa
+    "Africa/Cairo": "Egypt",
+    "Africa/Lagos": "Nigeria",
+    "Africa/Johannesburg": "South Africa",
+    "Africa/Casablanca": "Morocco",
+    "Africa/Nairobi": "Kenya",
+    "Africa/Tunis": "Tunisia",
+    "Africa/Algiers": "Algeria",
+    "Africa/Addis_Ababa": "Ethiopia",
+    
+    // Oceania
+    "Australia/Sydney": "Australia",
+    "Australia/Melbourne": "Australia",
+    "Australia/Brisbane": "Australia",
+    "Australia/Perth": "Australia",
+    "Australia/Adelaide": "Australia",
+    "Pacific/Auckland": "New Zealand",
+    "Pacific/Fiji": "Fiji",
+};
+
+// --- Helper function to get country from timezone ---
+const getCountryFromTimezone = (timezone: string): string => {
+    return timezoneToCountry[timezone] || '';
+};
+
+// --- Helper function to format timezone for display ---
+const formatTimezoneForDisplay = (timezone: string): string => {
+    try {
+        const now = new Date();
+        const formatter = new Intl.DateTimeFormat('en', {
+            timeZone: timezone,
+            timeZoneName: 'short'
+        });
+        const parts = formatter.formatToParts(now);
+        const timeZoneName = parts.find(part => part.type === 'timeZoneName')?.value || '';
+        
+        // Get offset
+        const offsetMinutes = -new Date().getTimezoneOffset();
+        const offsetHours = Math.floor(Math.abs(offsetMinutes) / 60);
+        const offsetMins = Math.abs(offsetMinutes) % 60;
+        const offsetSign = offsetMinutes >= 0 ? '+' : '-';
+        const offsetStr = `GMT${offsetSign}${String(offsetHours).padStart(2, '0')}:${String(offsetMins).padStart(2, '0')}`;
+        
+        return `(${offsetStr}) ${timezone}`;
+    } catch {
+        return timezone;
+    }
+};
+
 // --- Calendar Component ---
 const Calendar: React.FC<{
     selectedDate: Date;
@@ -275,12 +400,11 @@ const Calendar: React.FC<{
     
     const handleDateSelect = (date: Date) => {
         onDateSelect(date);
-        onTimeSelect(null); // Reset time when date changes
+        onTimeSelect(null);
     };
 
     return (
         <div className="bg-white/60 backdrop-blur-lg p-6 md:p-8 rounded-2xl border border-[var(--border-primary)] shadow-[var(--shadow-custom-lg)] w-full">
-            {/* Header with navigation */}
             <div className="flex justify-between items-center mb-6">
                 <button onClick={handlePrevWeek} className="p-2 rounded-full hover:bg-slate-100 transition-colors">
                     <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-slate-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -297,7 +421,6 @@ const Calendar: React.FC<{
                 </button>
             </div>
 
-            {/* Week days */}
             <div className="grid grid-cols-7 gap-1 text-center">
                 {weekDays.map(day => (
                     <button 
@@ -311,7 +434,6 @@ const Calendar: React.FC<{
                 ))}
             </div>
 
-            {/* Time slots */}
             <div className="mt-8 border-t border-slate-200 pt-6">
                  <h4 className="font-semibold text-slate-700 mb-4 text-center">Available Slots for {selectedDate.toLocaleDateString('default', { weekday: 'long', month: 'long', day: 'numeric' })}</h4>
                  <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 pr-2">
@@ -471,12 +593,12 @@ const ContactForm: React.FC<ContactFormProps> = ({ formData, errors, onInputChan
                     <FormInput id="email" name="email" type="email" label="Email Address" autoComplete="email" value={formData.email} onChange={onInputChange} error={errors.email} />
                     <FormInput id="industry" name="industry" type="text" label="Industry" autoComplete="organization-title" value={formData.industry} onChange={onInputChange} error={errors.industry} />
                     
-                    <FormSelect id="country" name="country" label="Country" autoComplete="country-name" value={formData.country} onChange={onInputChange} error={errors.country}>
+                    <FormSelect id="country" name="country" label="Country (Auto-detected)" autoComplete="country-name" value={formData.country} onChange={onInputChange} error={errors.country}>
                         <option value="" disabled>Select a country...</option>
                         {countries.map(c => <option key={c} value={c}>{c}</option>)}
                     </FormSelect>
                     
-                    <FormSelect id="timezone" name="timezone" label="Time Zone" autoComplete="on" value={formData.timezone} onChange={onInputChange} error={errors.timezone} disabled={isTimezoneDisabled}>
+                    <FormSelect id="timezone" name="timezone" label="Time Zone (Auto-detected)" autoComplete="on" value={formData.timezone} onChange={onInputChange} error={errors.timezone} disabled={isTimezoneDisabled}>
                         <option value="" disabled>{formData.country ? 'Select a time zone...' : 'Select a country first'}</option>
                         {availableTimezones.map(t => <option key={t} value={t}>{t}</option>)}
                     </FormSelect>
@@ -545,9 +667,42 @@ const ContactPage: React.FC = () => {
     useEffect(() => {
         const interval = setInterval(() => {
             setCurrentFactIndex(prevIndex => (prevIndex + 1) % aiFacts.length);
-        }, 5000); // Change fact every 5 seconds
+        }, 5000);
 
-        return () => clearInterval(interval); // Cleanup on component unmount
+        return () => clearInterval(interval);
+    }, []);
+    
+    // --- AUTO-DETECTION EFFECT ---
+    useEffect(() => {
+        try {
+            // Get user's timezone
+            const userTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+            console.log('Detected timezone:', userTimezone);
+            
+            // Get country from timezone
+            const detectedCountry = getCountryFromTimezone(userTimezone);
+            console.log('Detected country:', detectedCountry);
+            
+            if (detectedCountry && countryTimezones[detectedCountry]) {
+                // Auto-populate country and timezone
+                const countryTimezoneList = countryTimezones[detectedCountry];
+                const formattedTimezone = formatTimezoneForDisplay(userTimezone);
+                
+                // Find matching timezone in the list, or use first one as fallback
+                const matchingTimezone = countryTimezoneList.find(tz => tz.includes(userTimezone)) || countryTimezoneList[0];
+                
+                setFormData(prev => ({
+                    ...prev,
+                    country: detectedCountry,
+                    timezone: matchingTimezone
+                }));
+                
+                setAvailableTimezones(countryTimezoneList);
+            }
+        } catch (error) {
+            console.log('Auto-detection failed:', error);
+            // Fallback silently - user can still select manually
+        }
     }, []);
     
     // Effect to update available timezones when country changes
@@ -558,8 +713,10 @@ const ContactPage: React.FC = () => {
         } else {
             setAvailableTimezones([]);
         }
-        // Reset timezone when country changes
-        setFormData(prev => ({ ...prev, timezone: '' }));
+        // Reset timezone when country changes (except during auto-detection)
+        if (selectedCountry && !formData.timezone.includes('GMT')) {
+            setFormData(prev => ({ ...prev, timezone: '' }));
+        }
     }, [formData.country]);
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
@@ -622,13 +779,14 @@ const ContactPage: React.FC = () => {
             message: formData.message,
             appointmentDate: selectedDate.toISOString().split('T')[0],
             appointmentTime: selectedTime || '',
+            detectedTimezone: Intl.DateTimeFormat().resolvedOptions().timeZone, // Include raw timezone for reference
           };
     
           const proxyUrl = '/.netlify/functions/proxyWebhook';
 
           const response = await fetch(proxyUrl, {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' }, // use 'application/json'
+            headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(submissionData),
             });
 
@@ -640,7 +798,6 @@ const ContactPage: React.FC = () => {
             throw new Error(`Webhook submission failed with status: ${response.status}`);
           }
     
-          // If it's JSON like {"message":"Workflow was started"}
           try {
             const result = JSON.parse(resultText);
             console.log("Webhook parsed response:", result);
