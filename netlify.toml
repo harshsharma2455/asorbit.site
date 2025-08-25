@@ -1,0 +1,7 @@
+# netlify.toml   ––– tell Netlify to send every unknown
+#                 path to index.html so React Router can
+#                 handle client-side routing.
+[[redirects]]
+from = "/*"
+to   = "/index.html"
+status = 200
