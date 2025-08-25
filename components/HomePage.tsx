@@ -1,6 +1,7 @@
 import React from 'react';
 import Hero from './Hero';
 import Features from './Features';
+import HomeResources from './HomeResources';
 import HowItWorks from './HowItWorks';
 import CTA from './CTA';
 import type { View } from '../App';
@@ -17,7 +18,8 @@ const HomePage: React.FC<HomePageProps> = ({ onNavigate, scrollY }) => {
             <div className="relative z-10 bg-[var(--bg-primary)]">
                 <Features />
                 <HowItWorks />
-                <CTA onNavigate={onNavigate} />
+                <HomeResources />
+                <CTA />
             </div>
         </div>
     );
