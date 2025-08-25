@@ -21,7 +21,7 @@ const CTA: React.FC = () => (
         {/* ─── Button that changes the URL to /contact-v2 ─── */}
         <div className="mt-10 flex items-center justify-center">
           <Link
-            to="/contact-v2"
+            to="/contact"
             className="rounded-lg bg-white px-8 py-3.5 text-base font-semibold text-indigo-600 shadow-lg hover:bg-indigo-50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white transition-all duration-300 transform hover:scale-105"
           >
             Schedule&nbsp;a&nbsp;Demo

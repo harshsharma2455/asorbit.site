@@ -8,7 +8,6 @@ import Header from './components/Header';
 import Footer from './components/Footer';
 import HomePage from './components/HomePage';
 import ContactPage from './components/ContactPage';
-import ContactPageV2 from './components/ContactPageV2';
 import ResourcesPage from './components/FormsPage';
 import Chatbot from './components/Chatbot';
 
@@ -108,8 +107,7 @@ const App: React.FC = () => {
           <main className="flex-grow">
             <Routes>
               <Route path="/" element={<HomePage />} />
-              <Route path="/contact" element={<ContactPageV2 />} />
-              <Route path="/contact-v2" element={<ContactPage />} />
+              <Route path="/contact" element={<ContactPage />} />
               <Route path="/resources" element={<ResourcesPage />} />
               {/* fallback → send unknown paths to home */}
               <Route path="*" element={<HomePage />} />
