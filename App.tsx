@@ -2,6 +2,7 @@
 // ─────────────────────────────────────────────────────────────
 import React, { useState, useEffect } from 'react';
 import { Routes, Route, useLocation } from 'react-router-dom';
+import ScrollToHash from './components/ScrollToHash';
 
 import Header from './components/Header';
 import Footer from './components/Footer';
@@ -103,7 +104,7 @@ const App: React.FC = () => {
         {/* Layout */}
         <div className="relative flex flex-col min-h-screen">
           <Header /> {/* no props needed */}
-
+            <ScrollToHash />
           <main className="flex-grow">
             <Routes>
               <Route path="/" element={<HomePage />} />
