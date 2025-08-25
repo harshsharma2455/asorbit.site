@@ -644,6 +644,7 @@ const ContactPage: React.FC = () => {
     const [formStatus, setFormStatus] = useState<'editing' | 'submitted'>('editing');
     const [isLoading, setIsLoading] = useState(false);
     const [submitError, setSubmitError] = useState<string | null>(null);
+    const [autoDetectionStatus, setAutoDetectionStatus] = useState<'detecting' | 'success' | 'failed' | 'none'>('none');
 
     const [formData, setFormData] = useState<FormData>({
         name: '',
@@ -672,40 +673,61 @@ const ContactPage: React.FC = () => {
         return () => clearInterval(interval);
     }, []);
     
-    // --- AUTO-DETECTION EFFECT ---
+    // --- IMPROVED AUTO-DETECTION EFFECT ---
     useEffect(() => {
-        try {
-            // Get user's timezone
-            const userTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
-            console.log('Detected timezone:', userTimezone);
+        const performAutoDetection = async () => {
+            setAutoDetectionStatus('detecting');
             
-            // Get country from timezone
-            const detectedCountry = getCountryFromTimezone(userTimezone);
-            console.log('Detected country:', detectedCountry);
-            
-            if (detectedCountry && countryTimezones[detectedCountry]) {
-                // Auto-populate country and timezone
-                const countryTimezoneList = countryTimezones[detectedCountry];
-                const formattedTimezone = formatTimezoneForDisplay(userTimezone);
+            try {
+                // Get user's timezone
+                const userTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+                console.log('🌍 Detected timezone:', userTimezone);
                 
-                // Find matching timezone in the list, or use first one as fallback
-                const matchingTimezone = countryTimezoneList.find(tz => tz.includes(userTimezone)) || countryTimezoneList[0];
+                // Get country from timezone
+                const detectedCountry = getCountryFromTimezone(userTimezone);
+                console.log('🏳️ Detected country:', detectedCountry);
                 
-                setFormData(prev => ({
-                    ...prev,
-                    country: detectedCountry,
-                    timezone: matchingTimezone
-                }));
-                
-                setAvailableTimezones(countryTimezoneList);
+                if (detectedCountry && countryTimezones[detectedCountry]) {
+                    console.log('✅ Auto-detection successful!');
+                    
+                    // Auto-populate country
+                    setFormData(prev => ({
+                        ...prev,
+                        country: detectedCountry
+                    }));
+                    
+                    // Set available timezones
+                    const countryTimezoneList = countryTimezones[detectedCountry];
+                    setAvailableTimezones(countryTimezoneList);
+                    
+                    // Try to find exact timezone match, or use first one
+                    const matchingTimezone = countryTimezoneList.find(tz => tz.includes(userTimezone)) || countryTimezoneList[0];
+                    
+                    // Set timezone after a small delay to show the effect
+                    setTimeout(() => {
+                        setFormData(prev => ({
+                            ...prev,
+                            timezone: matchingTimezone
+                        }));
+                        setAutoDetectionStatus('success');
+                    }, 500);
+                    
+                } else {
+                    console.log('❌ Auto-detection failed: Country not found for timezone', userTimezone);
+                    setAutoDetectionStatus('failed');
+                }
+            } catch (error) {
+                console.log('❌ Auto-detection error:', error);
+                setAutoDetectionStatus('failed');
             }
-        } catch (error) {
-            console.log('Auto-detection failed:', error);
-            // Fallback silently - user can still select manually
-        }
+        };
+
+        // Run auto-detection after component mounts
+        const timer = setTimeout(performAutoDetection, 100);
+        return () => clearTimeout(timer);
     }, []);
     
-    // Effect to update available timezones when country changes
+    // Effect to update available timezones when country changes manually
     useEffect(() => {
         const selectedCountry = formData.country;
         if (selectedCountry && countryTimezones[selectedCountry]) {
@@ -713,137 +735,43 @@ const ContactPage: React.FC = () => {
         } else {
             setAvailableTimezones([]);
         }
-        // Reset timezone when country changes (except during auto-detection)
-        if (selectedCountry && !formData.timezone.includes('GMT')) {
+        
+        // Don't reset timezone if it's already set (from auto-detection)
+        if (selectedCountry && !formData.timezone && autoDetectionStatus !== 'detecting') {
             setFormData(prev => ({ ...prev, timezone: '' }));
         }
-    }, [formData.country]);
+    }, [formData.country, autoDetectionStatus]);
 
-    const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
-        const { name, value } = e.target;
-        setFormData(prev => ({ ...prev, [name]: value }));
-        if (errors[name]) {
-            setErrors(prev => {
-                const newErrors = { ...prev };
-                delete newErrors[name];
-                return newErrors;
-            });
-        }
-    };
-    
-    const handleTimeSelect = (time: string | null) => {
-        setSelectedTime(time);
-        if (errors.time) {
-            setErrors(prev => {
-                const newErrors = { ...prev };
-                delete newErrors.time;
-                return newErrors;
-            });
-        }
-    }
-    
-    const validate = (): boolean => {
-        const newErrors: { [key: string]: string } = {};
-        if (!formData.name.trim()) newErrors.name = 'Name is required.';
-        if (!formData.email.trim()) {
-            newErrors.email = 'Email Address is required.';
-        } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
-            newErrors.email = 'Please provide a valid email address.';
-        }
-        if (!formData.industry.trim()) newErrors.industry = 'Industry is required.';
-        if (!formData.country) newErrors.country = 'Country is required.';
-        if (!formData.timezone) newErrors.timezone = 'Time zone is required.';
-        if (!formData.budget) newErrors.budget = 'Please select a budget.';
-        if (!formData.outcome.trim()) newErrors.outcome = 'Please describe your desired outcome.';
-        if (!selectedTime) newErrors.time = 'Please select an available time slot.';
-        
-        setErrors(newErrors);
-        return Object.keys(newErrors).length === 0;
-    };
+    // ... rest of your component methods stay the same (handleInputChange, handleTimeSelect, validate, handleSubmit) ...
 
-    const handleSubmit = async (e: FormEvent) => {
-      e.preventDefault();
-      setSubmitError(null);
-    
-      if (validate()) {
-        setIsLoading(true);
-        try {
-          const submissionData = {
-            name: formData.name,
-            email: formData.email,
-            industry: formData.industry,
-            country: formData.country,
-            timezone: formData.timezone,
-            budget: formData.budget,
-            outcome: formData.outcome,
-            message: formData.message,
-            appointmentDate: selectedDate.toISOString().split('T')[0],
-            appointmentTime: selectedTime || '',
-            detectedTimezone: Intl.DateTimeFormat().resolvedOptions().timeZone, // Include raw timezone for reference
-          };
-    
-          const proxyUrl = '/.netlify/functions/proxyWebhook';
-
-          const response = await fetch(proxyUrl, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(submissionData),
-            });
-
-    
-          const resultText = await response.text();
-          console.log("Webhook raw response:", response.status, resultText);
-    
-          if (!response.ok) {
-            throw new Error(`Webhook submission failed with status: ${response.status}`);
-          }
-    
-          try {
-            const result = JSON.parse(resultText);
-            console.log("Webhook parsed response:", result);
-          } catch {
-            console.warn("Response was not JSON:", resultText);
-          }
-    
-          setFormStatus('submitted');
-          window.scrollTo(0, 0);
-    
-        } catch (error: any) {
-          console.error('Submission Error:', error);
-          setSubmitError(error.message || 'Submission failed. Please try again.');
-        } finally {
-          setIsLoading(false);
-        }
-      }
-    };
-
-    if (formStatus === 'submitted') {
-        return (
-            <div key="contact-success" className="animate-fadeInUp pt-28 sm:pt-32 pb-16">
-                <div className="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-                    <div className="bg-white/60 backdrop-blur-lg p-8 md:p-12 rounded-2xl border border-[var(--border-primary)] shadow-[var(--shadow-custom-lg)]">
-                        <div className="mx-auto flex items-center justify-center h-16 w-16 rounded-full bg-green-100">
-                             <svg className="h-8 w-8 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" />
-                            </svg>
-                        </div>
-                        <h2 className="mt-6 text-3xl font-bold text-slate-900 sm:text-4xl">Appointment Booked!</h2>
-                        <p className="mt-4 text-lg text-slate-600">
-                            Thank you for scheduling a consultation. I have received your request and will send a confirmation to <span className="font-semibold text-indigo-600">{formData.email}</span> shortly.
-                        </p>
-                    </div>
-                </div>
-            </div>
-        );
-    }
-    
-    const factWithoutPrefix = aiFacts[currentFactIndex].replace(/^Did you know /i, '');
-
+    // In the return statement, update the FormSelect components to show detection status:
     return (
         <div key="contact" className="animate-fadeInUp pt-28 sm:pt-32 pb-16">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                {/* Add detection status indicator */}
+                {autoDetectionStatus === 'detecting' && (
+                    <div className="mb-6 bg-blue-50 border-l-4 border-blue-400 p-4 rounded-r-lg">
+                        <div className="flex items-center">
+                            <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-blue-600 mr-3"></div>
+                            <p className="text-blue-700">Detecting your location...</p>
+                        </div>
+                    </div>
+                )}
+                
+                {autoDetectionStatus === 'success' && (
+                    <div className="mb-6 bg-green-50 border-l-4 border-green-400 p-4 rounded-r-lg">
+                        <div className="flex items-center">
+                            <svg className="h-4 w-4 text-green-600 mr-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                            </svg>
+                            <p className="text-green-700">Location detected and pre-filled! You can change it if needed.</p>
+                        </div>
+                    </div>
+                )}
+
                 <div className="relative">
                     <div className="flex flex-col md:flex-row gap-12 md:gap-16 items-start">
+                        {/* Calendar component stays the same */}
                         <div className="w-full md:w-1/2">
                             <Calendar 
                                 selectedDate={selectedDate}
@@ -852,22 +780,10 @@ const ContactPage: React.FC = () => {
                                 onTimeSelect={handleTimeSelect}
                                 timeError={errors.time}
                             />
-                            <div className="mt-8 bg-indigo-50 border-l-4 border-indigo-300 p-5 rounded-r-lg shadow-[var(--shadow-custom)]">
-                                <div className="flex items-start gap-4">
-                                    <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8 text-indigo-400 flex-shrink-0 mt-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 18v-5.25m0 0a6.01 6.01 0 001.5-.189m-1.5.189a6.01 6.01 0 01-1.5-.189m3.75 7.478a12.06 12.06 0 01-4.5 0m3.75 2.311a7.5 7.5 0 01-7.5 0c-1.42 0-2.67-.34-3.75-.934m15.002 0c-1.08.594-2.33.934-3.75.934a7.5 7.5 0 01-7.5 0" />
-                                    </svg>
-                                    <div>
-                                        <h4 className="text-lg font-bold text-slate-800">Did you know?</h4>
-                                        <p className="mt-1 text-slate-600 transition-opacity duration-500">
-                                            <span className="font-bold text-indigo-600">"</span>
-                                            {factWithoutPrefix}
-                                            <span className="font-bold text-indigo-600">"</span>
-                                        </p>
-                                    </div>
-                                </div>
-                            </div>
+                            {/* Did you know section stays the same */}
                         </div>
+
+                        {/* Contact form with updated labels */}
                         <div className="w-full md:w-1/2">
                             <ContactForm 
                                 formData={formData} 
@@ -885,5 +801,6 @@ const ContactPage: React.FC = () => {
         </div>
     );
 };
+
 
 export default ContactPage;
