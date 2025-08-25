@@ -1,106 +1,131 @@
+// App.tsx
+// ─────────────────────────────────────────────────────────────
 import React, { useState, useEffect } from 'react';
+import { Routes, Route, Link, useLocation } from 'react-router-dom';
+
 import Header from './components/Header';
 import Footer from './components/Footer';
 import HomePage from './components/HomePage';
 import ContactPage from './components/ContactPage';
-import Chatbot from './components/Chatbot';
+import ContactPageV2 from './components/ContactPageV2';
 import ResourcesPage from './components/FormsPage';
+import Chatbot from './components/Chatbot';
 
-export type View = 'home' | 'features' | 'process' | 'contact' | 'resources';
-
-const Orb: React.FC<{ scrollY: number; className: string; factor: number; style?: React.CSSProperties }> = ({ scrollY, className, factor, style }) => (
-    <div
-        className={`absolute rounded-full ${className}`}
-        style={{
-            ...style,
-            transform: `translateZ(${scrollY * factor * 0.4}px) translateY(${scrollY * factor * 0.15}px) rotateY(${scrollY * 0.03}deg)`,
-        }}
-    />
+// ─── Parallax orb helper ────────────────────────────────────
+const Orb: React.FC<{
+  scrollY: number;
+  className: string;
+  factor: number;
+  style?: React.CSSProperties;
+}> = ({ scrollY, className, factor, style }) => (
+  <div
+    className={`absolute rounded-full ${className}`}
+    style={{
+      ...style,
+      transform: `translateZ(${scrollY * factor * 0.4}px)
+                  translateY(${scrollY * factor * 0.15}px)
+                  rotateY(${scrollY * 0.03}deg)`,
+    }}
+  />
 );
 
+// ─── Main app ───────────────────────────────────────────────
 const App: React.FC = () => {
-    const [scrollY, setScrollY] = useState(0);
-    const [currentView, setCurrentView] = useState<View>('home');
+  const [scrollY, setScrollY] = useState(0);
 
-    useEffect(() => {
-        const handleScroll = () => {
-            setScrollY(window.scrollY);
-        };
-        window.addEventListener('scroll', handleScroll, { passive: true });
-        return () => {
-            window.removeEventListener('scroll', handleScroll);
-        };
-    }, []);
+  // keep parallax scrolling
+  useEffect(() => {
+    const handle = () => setScrollY(window.scrollY);
+    window.addEventListener('scroll', handle, { passive: true });
+    return () => window.removeEventListener('scroll', handle);
+  }, []);
 
-    useEffect(() => {
-        if (currentView === 'contact' || currentView === 'resources') {
-            window.scrollTo(0, 0);
-        }
-    }, [currentView]);
-    
-    const handleNavigate = (view: View) => {
-        if (view === 'contact' || view === 'resources') {
-            setCurrentView(view);
-        } else if (view === 'home') {
-            setCurrentView('home');
-            setTimeout(() => {
-                 window.scrollTo({ top: 0, behavior: 'smooth' });
-            }, 50);
-        } else {
-            setCurrentView('home');
-            setTimeout(() => {
-                const element = document.getElementById(view);
-                if (element) {
-                    element.scrollIntoView({ behavior: 'smooth' });
-                }
-            }, 50);
-        }
-    };
+  // scroll to top whenever the URL changes
+  const { pathname } = useLocation();
+  useEffect(() => window.scrollTo(0, 0), [pathname]);
 
-    const renderView = () => {
-        switch (currentView) {
-            case 'contact':
-                return <ContactPage />;
-            case 'resources':
-                return <ResourcesPage />;
-            case 'home':
-            default:
-                return <HomePage onNavigate={handleNavigate} scrollY={scrollY} />;
-        }
-    };
+  // helper: show extra orbs only on the home route
+  const showHomeOrbs = pathname === '/';
 
-    return (
-        <>
-            <div className="bg-[var(--bg-primary)] text-slate-800 flex-grow" style={{ perspective: '1000px' }}>
-                <div className="fixed top-0 left-0 w-full h-full z-0 pointer-events-none overflow-x-hidden">
-                    <div 
-                        className="absolute top-0 left-0 w-full h-[200vh] bg-gradient-to-b from-indigo-100/10 via-transparent to-transparent"
-                        style={{ transform: `translateY(-${scrollY * 0.2}px)` }}
-                    ></div>
-                    <div className="absolute inset-0 w-full h-full" style={{ transformStyle: 'preserve-3d' }}>
-                        <Orb scrollY={scrollY} factor={-0.4} className="w-[600px] h-[600px] bg-indigo-500/5 blur-3xl" style={{ top: '10vh', left: '10vw' }} />
-                        {currentView === 'home' && (
-                            <>
-                                <Orb scrollY={scrollY} factor={-0.7} className="w-[500px] h-[500px] bg-cyan-400/5 blur-3xl" style={{ top: '80vh', right: '15vw' }} />
-                                <Orb scrollY={scrollY} factor={0.3} className="w-96 h-96 border border-indigo-200/20 rounded-full" style={{ top: '150vh', left: '20vw' }}/>
-                                <Orb scrollY={scrollY} factor={0.5} className="w-72 h-72 border border-cyan-200/20 rounded-full" style={{ top: '200vh', right: '25vw' }}/>
-                                <Orb scrollY={scrollY} factor={-0.6} className="w-[300px] h-[300px] bg-purple-500/5 blur-3xl" style={{ top: '250vh', left: '10vw' }} />
-                            </>
-                        )}
-                    </div>
-                </div>
-                
-                <div className="relative flex flex-col h-full">
-                    <Header onNavigate={handleNavigate} />
-                    <main className="flex-grow">
-                        {renderView()}
-                    </main>
-                    <Footer onNavigate={handleNavigate} />
-                </div>
-            </div>
-            <Chatbot />
-        </>
-    );
+  return (
+    <>
+      <div
+        className="bg-[var(--bg-primary)] text-slate-800 flex-grow"
+        style={{ perspective: '1000px' }}
+      >
+        {/* 3-D background */}
+        <div className="fixed top-0 left-0 w-full h-full z-0 pointer-events-none overflow-x-hidden">
+          <div
+            className="absolute top-0 left-0 w-full h-[200vh] bg-gradient-to-b from-indigo-100/10 via-transparent to-transparent"
+            style={{ transform: `translateY(-${scrollY * 0.2}px)` }}
+          />
+          <div
+            className="absolute inset-0 w-full h-full"
+            style={{ transformStyle: 'preserve-3d' }}
+          >
+            <Orb
+              scrollY={scrollY}
+              factor={-0.4}
+              className="w-[600px] h-[600px] bg-indigo-500/5 blur-3xl"
+              style={{ top: '10vh', left: '10vw' }}
+            />
+            {showHomeOrbs && (
+              <>
+                <Orb
+                  scrollY={scrollY}
+                  factor={-0.7}
+                  className="w-[500px] h-[500px] bg-cyan-400/5 blur-3xl"
+                  style={{ top: '80vh', right: '15vw' }}
+                />
+                <Orb
+                  scrollY={scrollY}
+                  factor={0.3}
+                  className="w-96 h-96 border border-indigo-200/20 rounded-full"
+                  style={{ top: '150vh', left: '20vw' }}
+                />
+                <Orb
+                  scrollY={scrollY}
+                  factor={0.5}
+                  className="w-72 h-72 border border-cyan-200/20 rounded-full"
+                  style={{ top: '200vh', right: '25vw' }}
+                />
+                <Orb
+                  scrollY={scrollY}
+                  factor={-0.6}
+                  className="w-[300px] h-[300px] bg-purple-500/5 blur-3xl"
+                  style={{ top: '250vh', left: '10vw' }}
+                />
+              </>
+            )}
+          </div>
+        </div>
+
+        {/* Layout */}
+        <div className="relative flex flex-col min-h-screen">
+          <Header
+            // example of using real links inside a custom header component:
+            // pass react-router’s Link so the header can render <Link to="...">
+            // or use an onClick={() => navigate('/path')} via useNavigate
+          />
+
+          <main className="flex-grow">
+            <Routes>
+              <Route path="/" element={<HomePage />} />
+              <Route path="/contact" element={<ContactPage />} />
+              <Route path="/contact-v2" element={<ContactPageV2 />} />
+              <Route path="/resources" element={<ResourcesPage />} />
+              {/* fallback -> send unknown paths to home */}
+              <Route path="*" element={<HomePage />} />
+            </Routes>
+          </main>
+
+          <Footer />
+        </div>
+      </div>
+
+      <Chatbot />
+    </>
+  );
 };
 
 export default App;
