@@ -236,131 +236,6 @@ const countryTimezones: { [key: string]: string[] } = {
     "Zimbabwe": ["(GMT+02:00) Africa/Harare"]
 };
 
-// --- AUTO-DETECTION: Timezone to Country mapping ---
-const timezoneToCountry: { [key: string]: string } = {
-    // Americas
-    "America/New_York": "United States",
-    "America/Chicago": "United States", 
-    "America/Denver": "United States",
-    "America/Los_Angeles": "United States",
-    "America/Anchorage": "United States",
-    "America/Detroit": "United States",
-    "America/Phoenix": "United States",
-    "Pacific/Honolulu": "United States",
-    "America/Toronto": "Canada",
-    "America/Vancouver": "Canada",
-    "America/Montreal": "Canada",
-    "America/Halifax": "Canada",
-    "America/Mexico_City": "Mexico",
-    "America/Sao_Paulo": "Brazil",
-    "America/Buenos_Aires": "Argentina",
-    "America/Lima": "Peru",
-    "America/Bogota": "Colombia",
-    "America/Santiago": "Chile",
-    
-    // Europe
-    "Europe/London": "United Kingdom",
-    "Europe/Berlin": "Germany",
-    "Europe/Paris": "France",
-    "Europe/Rome": "Italy",
-    "Europe/Madrid": "Spain",
-    "Europe/Amsterdam": "Netherlands",
-    "Europe/Brussels": "Belgium",
-    "Europe/Vienna": "Austria",
-    "Europe/Stockholm": "Sweden",
-    "Europe/Copenhagen": "Denmark",
-    "Europe/Oslo": "Norway",
-    "Europe/Helsinki": "Finland",
-    "Europe/Warsaw": "Poland",
-    "Europe/Prague": "Czech Republic",
-    "Europe/Budapest": "Hungary",
-    "Europe/Bucharest": "Romania",
-    "Europe/Athens": "Greece",
-    "Europe/Istanbul": "Turkey",
-    "Europe/Moscow": "Russia",
-    "Europe/Kiev": "Ukraine",
-    "Europe/Zurich": "Switzerland",
-    "Europe/Dublin": "Ireland",
-    "Europe/Lisbon": "Portugal",
-    
-    // Asia
-    "Asia/Tokyo": "Japan",
-    "Asia/Shanghai": "China",
-    "Asia/Seoul": "South Korea",
-    "Asia/Singapore": "Singapore",
-    "Asia/Hong_Kong": "China",
-    "Asia/Bangkok": "Thailand",
-    "Asia/Manila": "Philippines",
-    "Asia/Jakarta": "Indonesia",
-    "Asia/Kuala_Lumpur": "Malaysia",
-    "Asia/Ho_Chi_Minh": "Vietnam",
-    "Asia/Kolkata": "India",
-    "Asia/Mumbai": "India",
-    "Asia/Dubai": "United Arab Emirates",
-    "Asia/Tehran": "Iran",
-    "Asia/Baghdad": "Iraq",
-    "Asia/Jerusalem": "Israel",
-    "Asia/Riyadh": "Saudi Arabia",
-    "Asia/Kuwait": "Kuwait",
-    "Asia/Qatar": "Qatar",
-    "Asia/Karachi": "Pakistan",
-    "Asia/Dhaka": "Bangladesh",
-    "Asia/Kabul": "Afghanistan",
-    "Asia/Tashkent": "Uzbekistan",
-    "Asia/Almaty": "Kazakhstan",
-    "Asia/Yerevan": "Armenia",
-    "Asia/Baku": "Azerbaijan",
-    "Asia/Tbilisi": "Georgia",
-    
-    // Africa
-    "Africa/Cairo": "Egypt",
-    "Africa/Lagos": "Nigeria",
-    "Africa/Johannesburg": "South Africa",
-    "Africa/Casablanca": "Morocco",
-    "Africa/Nairobi": "Kenya",
-    "Africa/Tunis": "Tunisia",
-    "Africa/Algiers": "Algeria",
-    "Africa/Addis_Ababa": "Ethiopia",
-    
-    // Oceania
-    "Australia/Sydney": "Australia",
-    "Australia/Melbourne": "Australia",
-    "Australia/Brisbane": "Australia",
-    "Australia/Perth": "Australia",
-    "Australia/Adelaide": "Australia",
-    "Pacific/Auckland": "New Zealand",
-    "Pacific/Fiji": "Fiji",
-};
-
-// --- Helper function to get country from timezone ---
-const getCountryFromTimezone = (timezone: string): string => {
-    return timezoneToCountry[timezone] || '';
-};
-
-// --- Helper function to format timezone for display ---
-const formatTimezoneForDisplay = (timezone: string): string => {
-    try {
-        const now = new Date();
-        const formatter = new Intl.DateTimeFormat('en', {
-            timeZone: timezone,
-            timeZoneName: 'short'
-        });
-        const parts = formatter.formatToParts(now);
-        const timeZoneName = parts.find(part => part.type === 'timeZoneName')?.value || '';
-        
-        // Get offset
-        const offsetMinutes = -new Date().getTimezoneOffset();
-        const offsetHours = Math.floor(Math.abs(offsetMinutes) / 60);
-        const offsetMins = Math.abs(offsetMinutes) % 60;
-        const offsetSign = offsetMinutes >= 0 ? '+' : '-';
-        const offsetStr = `GMT${offsetSign}${String(offsetHours).padStart(2, '0')}:${String(offsetMins).padStart(2, '0')}`;
-        
-        return `(${offsetStr}) ${timezone}`;
-    } catch {
-        return timezone;
-    }
-};
-
 // --- Calendar Component ---
 const Calendar: React.FC<{
     selectedDate: Date;
@@ -400,11 +275,12 @@ const Calendar: React.FC<{
     
     const handleDateSelect = (date: Date) => {
         onDateSelect(date);
-        onTimeSelect(null);
+        onTimeSelect(null); // Reset time when date changes
     };
 
     return (
         <div className="bg-white/60 backdrop-blur-lg p-6 md:p-8 rounded-2xl border border-[var(--border-primary)] shadow-[var(--shadow-custom-lg)] w-full">
+            {/* Header with navigation */}
             <div className="flex justify-between items-center mb-6">
                 <button onClick={handlePrevWeek} className="p-2 rounded-full hover:bg-slate-100 transition-colors">
                     <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-slate-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -421,6 +297,7 @@ const Calendar: React.FC<{
                 </button>
             </div>
 
+            {/* Week days */}
             <div className="grid grid-cols-7 gap-1 text-center">
                 {weekDays.map(day => (
                     <button 
@@ -434,6 +311,7 @@ const Calendar: React.FC<{
                 ))}
             </div>
 
+            {/* Time slots */}
             <div className="mt-8 border-t border-slate-200 pt-6">
                  <h4 className="font-semibold text-slate-700 mb-4 text-center">Available Slots for {selectedDate.toLocaleDateString('default', { weekday: 'long', month: 'long', day: 'numeric' })}</h4>
                  <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 pr-2">
@@ -593,12 +471,12 @@ const ContactForm: React.FC<ContactFormProps> = ({ formData, errors, onInputChan
                     <FormInput id="email" name="email" type="email" label="Email Address" autoComplete="email" value={formData.email} onChange={onInputChange} error={errors.email} />
                     <FormInput id="industry" name="industry" type="text" label="Industry" autoComplete="organization-title" value={formData.industry} onChange={onInputChange} error={errors.industry} />
                     
-                    <FormSelect id="country" name="country" label="Country (Auto-detected)" autoComplete="country-name" value={formData.country} onChange={onInputChange} error={errors.country}>
+                    <FormSelect id="country" name="country" label="Country" autoComplete="country-name" value={formData.country} onChange={onInputChange} error={errors.country}>
                         <option value="" disabled>Select a country...</option>
                         {countries.map(c => <option key={c} value={c}>{c}</option>)}
                     </FormSelect>
                     
-                    <FormSelect id="timezone" name="timezone" label="Time Zone (Auto-detected)" autoComplete="on" value={formData.timezone} onChange={onInputChange} error={errors.timezone} disabled={isTimezoneDisabled}>
+                    <FormSelect id="timezone" name="timezone" label="Time Zone" autoComplete="on" value={formData.timezone} onChange={onInputChange} error={errors.timezone} disabled={isTimezoneDisabled}>
                         <option value="" disabled>{formData.country ? 'Select a time zone...' : 'Select a country first'}</option>
                         {availableTimezones.map(t => <option key={t} value={t}>{t}</option>)}
                     </FormSelect>
@@ -644,7 +522,6 @@ const ContactPage: React.FC = () => {
     const [formStatus, setFormStatus] = useState<'editing' | 'submitted'>('editing');
     const [isLoading, setIsLoading] = useState(false);
     const [submitError, setSubmitError] = useState<string | null>(null);
-    const [autoDetectionStatus, setAutoDetectionStatus] = useState<'detecting' | 'success' | 'failed' | 'none'>('none');
 
     const [formData, setFormData] = useState<FormData>({
         name: '',
@@ -665,69 +542,66 @@ const ContactPage: React.FC = () => {
     // State for the rotating "Did you know?" facts
     const [currentFactIndex, setCurrentFactIndex] = useState(() => Math.floor(Math.random() * aiFacts.length));
 
+    // AUTO-DETECTION useEffect - ADD THIS
+    useEffect(() => {
+        const detectLocationAndTimezone = async () => {
+            try {
+                // Get user's timezone from browser
+                const detectedTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+                
+                // Get user's country from IP geolocation
+                const response = await fetch('https://ipapi.co/json/');
+                const data = await response.json();
+                
+                if (data && data.country_name) {
+                    const detectedCountry = data.country_name;
+                    
+                    // Check if the detected country exists in our countries list
+                    const countryExists = countries.includes(detectedCountry);
+                    
+                    if (countryExists) {
+                        // Set available timezones for the detected country
+                        if (countryTimezones[detectedCountry]) {
+                            setAvailableTimezones(countryTimezones[detectedCountry]);
+                            
+                            // Try to match the detected timezone with available ones
+                            const matchingTimezone = countryTimezones[detectedCountry].find(tz => 
+                                tz.includes(detectedTimezone)
+                            );
+                            
+                            // Update form data with detected values
+                            setFormData(prev => ({
+                                ...prev,
+                                country: detectedCountry,
+                                timezone: matchingTimezone || ''
+                            }));
+                        } else {
+                            // Just set country if no timezones available
+                            setFormData(prev => ({
+                                ...prev,
+                                country: detectedCountry
+                            }));
+                        }
+                    }
+                }
+            } catch (error) {
+                console.log('Auto-detection failed:', error);
+                // Silently fail - user can manually select country/timezone
+            }
+        };
+        
+        detectLocationAndTimezone();
+    }, []); // Empty dependency array means this runs once on component mount
+
     useEffect(() => {
         const interval = setInterval(() => {
             setCurrentFactIndex(prevIndex => (prevIndex + 1) % aiFacts.length);
-        }, 5000);
+        }, 5000); // Change fact every 5 seconds
 
-        return () => clearInterval(interval);
+        return () => clearInterval(interval); // Cleanup on component unmount
     }, []);
     
-    // --- IMPROVED AUTO-DETECTION EFFECT ---
-    useEffect(() => {
-        const performAutoDetection = async () => {
-            setAutoDetectionStatus('detecting');
-            
-            try {
-                // Get user's timezone
-                const userTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
-                console.log('🌍 Detected timezone:', userTimezone);
-                
-                // Get country from timezone
-                const detectedCountry = getCountryFromTimezone(userTimezone);
-                console.log('🏳️ Detected country:', detectedCountry);
-                
-                if (detectedCountry && countryTimezones[detectedCountry]) {
-                    console.log('✅ Auto-detection successful!');
-                    
-                    // Auto-populate country
-                    setFormData(prev => ({
-                        ...prev,
-                        country: detectedCountry
-                    }));
-                    
-                    // Set available timezones
-                    const countryTimezoneList = countryTimezones[detectedCountry];
-                    setAvailableTimezones(countryTimezoneList);
-                    
-                    // Try to find exact timezone match, or use first one
-                    const matchingTimezone = countryTimezoneList.find(tz => tz.includes(userTimezone)) || countryTimezoneList[0];
-                    
-                    // Set timezone after a small delay to show the effect
-                    setTimeout(() => {
-                        setFormData(prev => ({
-                            ...prev,
-                            timezone: matchingTimezone
-                        }));
-                        setAutoDetectionStatus('success');
-                    }, 500);
-                    
-                } else {
-                    console.log('❌ Auto-detection failed: Country not found for timezone', userTimezone);
-                    setAutoDetectionStatus('failed');
-                }
-            } catch (error) {
-                console.log('❌ Auto-detection error:', error);
-                setAutoDetectionStatus('failed');
-            }
-        };
-
-        // Run auto-detection after component mounts
-        const timer = setTimeout(performAutoDetection, 100);
-        return () => clearTimeout(timer);
-    }, []);
-    
-    // Effect to update available timezones when country changes manually
+    // Effect to update available timezones when country changes
     useEffect(() => {
         const selectedCountry = formData.country;
         if (selectedCountry && countryTimezones[selectedCountry]) {
@@ -735,43 +609,135 @@ const ContactPage: React.FC = () => {
         } else {
             setAvailableTimezones([]);
         }
-        
-        // Don't reset timezone if it's already set (from auto-detection)
-        if (selectedCountry && !formData.timezone && autoDetectionStatus !== 'detecting') {
-            setFormData(prev => ({ ...prev, timezone: '' }));
+        // Only reset timezone if country was changed manually (not by auto-detection)
+        // We can tell because auto-detection sets both country and timezone together
+    }, [formData.country]);
+
+    const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+        const { name, value } = e.target;
+        setFormData(prev => ({ ...prev, [name]: value }));
+        if (errors[name]) {
+            setErrors(prev => {
+                const newErrors = { ...prev };
+                delete newErrors[name];
+                return newErrors;
+            });
         }
-    }, [formData.country, autoDetectionStatus]);
+    };
+    
+    const handleTimeSelect = (time: string | null) => {
+        setSelectedTime(time);
+        if (errors.time) {
+            setErrors(prev => {
+                const newErrors = { ...prev };
+                delete newErrors.time;
+                return newErrors;
+            });
+        }
+    }
+    
+    const validate = (): boolean => {
+        const newErrors: { [key: string]: string } = {};
+        if (!formData.name.trim()) newErrors.name = 'Name is required.';
+        if (!formData.email.trim()) {
+            newErrors.email = 'Email Address is required.';
+        } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
+            newErrors.email = 'Please provide a valid email address.';
+        }
+        if (!formData.industry.trim()) newErrors.industry = 'Industry is required.';
+        if (!formData.country) newErrors.country = 'Country is required.';
+        if (!formData.timezone) newErrors.timezone = 'Time zone is required.';
+        if (!formData.budget) newErrors.budget = 'Please select a budget.';
+        if (!formData.outcome.trim()) newErrors.outcome = 'Please describe your desired outcome.';
+        if (!selectedTime) newErrors.time = 'Please select an available time slot.';
+        
+        setErrors(newErrors);
+        return Object.keys(newErrors).length === 0;
+    };
 
-    // ... rest of your component methods stay the same (handleInputChange, handleTimeSelect, validate, handleSubmit) ...
+    const handleSubmit = async (e: FormEvent) => {
+      e.preventDefault();
+      setSubmitError(null);
+    
+      if (validate()) {
+        setIsLoading(true);
+        try {
+          const submissionData = {
+            name: formData.name,
+            email: formData.email,
+            industry: formData.industry,
+            country: formData.country,
+            timezone: formData.timezone,
+            budget: formData.budget,
+            outcome: formData.outcome,
+            message: formData.message,
+            appointmentDate: selectedDate.toISOString().split('T')[0],
+            appointmentTime: selectedTime || '',
+          };
+    
+          const proxyUrl = '/.netlify/functions/proxyWebhook';
 
-    // In the return statement, update the FormSelect components to show detection status:
+          const response = await fetch(proxyUrl, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' }, // use 'application/json'
+            body: JSON.stringify(submissionData),
+            });
+
+    
+          const resultText = await response.text();
+          console.log("Webhook raw response:", response.status, resultText);
+    
+          if (!response.ok) {
+            throw new Error(`Webhook submission failed with status: ${response.status}`);
+          }
+    
+          // If it's JSON like {"message":"Workflow was started"}
+          try {
+            const result = JSON.parse(resultText);
+            console.log("Webhook parsed response:", result);
+          } catch {
+            console.warn("Response was not JSON:", resultText);
+          }
+    
+          setFormStatus('submitted');
+          window.scrollTo(0, 0);
+    
+        } catch (error: any) {
+          console.error('Submission Error:', error);
+          setSubmitError(error.message || 'Submission failed. Please try again.');
+        } finally {
+          setIsLoading(false);
+        }
+      }
+    };
+
+    if (formStatus === 'submitted') {
+        return (
+            <div key="contact-success" className="animate-fadeInUp pt-28 sm:pt-32 pb-16">
+                <div className="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+                    <div className="bg-white/60 backdrop-blur-lg p-8 md:p-12 rounded-2xl border border-[var(--border-primary)] shadow-[var(--shadow-custom-lg)]">
+                        <div className="mx-auto flex items-center justify-center h-16 w-16 rounded-full bg-green-100">
+                             <svg className="h-8 w-8 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" />
+                            </svg>
+                        </div>
+                        <h2 className="mt-6 text-3xl font-bold text-slate-900 sm:text-4xl">Appointment Booked!</h2>
+                        <p className="mt-4 text-lg text-slate-600">
+                            Thank you for scheduling a consultation. I have received your request and will send a confirmation to <span className="font-semibold text-indigo-600">{formData.email}</span> shortly.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        );
+    }
+    
+    const factWithoutPrefix = aiFacts[currentFactIndex].replace(/^Did you know /i, '');
+
     return (
         <div key="contact" className="animate-fadeInUp pt-28 sm:pt-32 pb-16">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                {/* Add detection status indicator */}
-                {autoDetectionStatus === 'detecting' && (
-                    <div className="mb-6 bg-blue-50 border-l-4 border-blue-400 p-4 rounded-r-lg">
-                        <div className="flex items-center">
-                            <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-blue-600 mr-3"></div>
-                            <p className="text-blue-700">Detecting your location...</p>
-                        </div>
-                    </div>
-                )}
-                
-                {autoDetectionStatus === 'success' && (
-                    <div className="mb-6 bg-green-50 border-l-4 border-green-400 p-4 rounded-r-lg">
-                        <div className="flex items-center">
-                            <svg className="h-4 w-4 text-green-600 mr-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                            </svg>
-                            <p className="text-green-700">Location detected and pre-filled! You can change it if needed.</p>
-                        </div>
-                    </div>
-                )}
-
                 <div className="relative">
                     <div className="flex flex-col md:flex-row gap-12 md:gap-16 items-start">
-                        {/* Calendar component stays the same */}
                         <div className="w-full md:w-1/2">
                             <Calendar 
                                 selectedDate={selectedDate}
@@ -780,10 +746,22 @@ const ContactPage: React.FC = () => {
                                 onTimeSelect={handleTimeSelect}
                                 timeError={errors.time}
                             />
-                            {/* Did you know section stays the same */}
+                            <div className="mt-8 bg-indigo-50 border-l-4 border-indigo-300 p-5 rounded-r-lg shadow-[var(--shadow-custom)]">
+                                <div className="flex items-start gap-4">
+                                    <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8 text-indigo-400 flex-shrink-0 mt-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 18v-5.25m0 0a6.01 6.01 0 001.5-.189m-1.5.189a6.01 6.01 0 01-1.5-.189m3.75 7.478a12.06 12.06 0 01-4.5 0m3.75 2.311a7.5 7.5 0 01-7.5 0c-1.42 0-2.67-.34-3.75-.934m15.002 0c-1.08.594-2.33.934-3.75.934a7.5 7.5 0 01-7.5 0" />
+                                    </svg>
+                                    <div>
+                                        <h4 className="text-lg font-bold text-slate-800">Did you know?</h4>
+                                        <p className="mt-1 text-slate-600 transition-opacity duration-500">
+                                            <span className="font-bold text-indigo-600">"</span>
+                                            {factWithoutPrefix}
+                                            <span className="font-bold text-indigo-600">"</span>
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
-
-                        {/* Contact form with updated labels */}
                         <div className="w-full md:w-1/2">
                             <ContactForm 
                                 formData={formData} 
@@ -801,6 +779,5 @@ const ContactPage: React.FC = () => {
         </div>
     );
 };
-
 
 export default ContactPage;
