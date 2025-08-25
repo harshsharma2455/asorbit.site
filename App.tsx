@@ -1,7 +1,7 @@
 // App.tsx
 // ─────────────────────────────────────────────────────────────
 import React, { useState, useEffect } from 'react';
-import { Routes, Route, Link, useLocation } from 'react-router-dom';
+import { Routes, Route, useLocation } from 'react-router-dom';
 
 import Header from './components/Header';
 import Footer from './components/Footer';
@@ -11,7 +11,7 @@ import ContactPageV2 from './components/ContactPageV2';
 import ResourcesPage from './components/FormsPage';
 import Chatbot from './components/Chatbot';
 
-// ─── Parallax orb helper ────────────────────────────────────
+/* ── Parallax orb helper ─────────────────────────────────── */
 const Orb: React.FC<{
   scrollY: number;
   className: string;
@@ -29,22 +29,22 @@ const Orb: React.FC<{
   />
 );
 
-// ─── Main app ───────────────────────────────────────────────
+/* ── Main app ─────────────────────────────────────────────── */
 const App: React.FC = () => {
   const [scrollY, setScrollY] = useState(0);
 
-  // keep parallax scrolling
+  /* keep parallax scrolling */
   useEffect(() => {
     const handle = () => setScrollY(window.scrollY);
     window.addEventListener('scroll', handle, { passive: true });
     return () => window.removeEventListener('scroll', handle);
   }, []);
 
-  // scroll to top whenever the URL changes
+  /* scroll to top whenever the URL changes */
   const { pathname } = useLocation();
   useEffect(() => window.scrollTo(0, 0), [pathname]);
 
-  // helper: show extra orbs only on the home route
+  /* show extra orbs only on the home route */
   const showHomeOrbs = pathname === '/';
 
   return (
@@ -102,11 +102,7 @@ const App: React.FC = () => {
 
         {/* Layout */}
         <div className="relative flex flex-col min-h-screen">
-          <Header
-            // example of using real links inside a custom header component:
-            // pass react-router’s Link so the header can render <Link to="...">
-            // or use an onClick={() => navigate('/path')} via useNavigate
-          />
+          <Header /> {/* no props needed */}
 
           <main className="flex-grow">
             <Routes>
@@ -114,12 +110,12 @@ const App: React.FC = () => {
               <Route path="/contact" element={<ContactPage />} />
               <Route path="/contact-v2" element={<ContactPageV2 />} />
               <Route path="/resources" element={<ResourcesPage />} />
-              {/* fallback -> send unknown paths to home */}
+              {/* fallback → send unknown paths to home */}
               <Route path="*" element={<HomePage />} />
             </Routes>
           </main>
 
-          <Footer />
+          <Footer /> {/* no props needed */}
         </div>
       </div>
 
